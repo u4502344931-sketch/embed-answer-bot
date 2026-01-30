@@ -64,17 +64,6 @@ const Hero = () => {
               </a>
             </div>
 
-            {/* Elegant social proof */}
-            <div className="mt-14 pt-10 border-t border-border/50">
-              <p className="text-sm text-muted-foreground mb-6 tracking-wide uppercase">
-                Trusted by discerning brands
-              </p>
-              <div className="flex items-center justify-center lg:justify-start gap-10 opacity-40 hover:opacity-60 transition-opacity">
-                <span className="font-serif text-xl tracking-tight">Maison</span>
-                <span className="font-serif text-xl tracking-tight">Atelier Co.</span>
-                <span className="font-serif text-xl tracking-tight">Sterling</span>
-              </div>
-            </div>
           </motion.div>
 
           {/* Right content - Widget Demo */}
