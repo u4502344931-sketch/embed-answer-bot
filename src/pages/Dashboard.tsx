@@ -96,16 +96,16 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-background border-b border-border">
+      <header className="bg-card/50 backdrop-blur-sm border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">S</span>
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+                <span className="text-background font-serif font-semibold text-lg">S</span>
               </div>
-              <span className="font-semibold text-xl">SiteWise.ai</span>
+              <span className="font-serif font-semibold text-xl tracking-tight">SiteWise</span>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-muted-foreground hidden sm:block">
@@ -123,10 +123,10 @@ const Dashboard = () => {
       {/* Main content */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome to SiteWise.ai</h1>
+        <div className="mb-10">
+          <h1 className="font-serif text-3xl font-semibold mb-2">Welcome to SiteWise</h1>
           <p className="text-muted-foreground">
-            Get started by adding your website content and customizing your chat widget.
+            Get started by adding your content and customizing your assistant.
           </p>
         </div>
 
