@@ -13,6 +13,11 @@ const faqs = [
       "Simply provide your website URL. Our intelligent system analyzes every page, understanding context, products, services, and nuances to create a comprehensive knowledge base for your assistant.",
   },
   {
+    question: "Can I upload my own documentation?",
+    answer:
+      "Absolutely. Beyond website crawling, you can upload PDFs, text files, or paste content directly. This is perfect for product manuals, internal guides, FAQs, or any proprietary documentation you'd like your assistant to reference.",
+  },
+  {
     question: "What's the typical setup time?",
     answer:
       "Most businesses are operational within five minutes. Add your URL, allow a brief moment for analysis, customize your widget's appearance, and implement the provided code.",
