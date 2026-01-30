@@ -1,81 +1,75 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, X, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 
 const plans = [
   {
-    name: "Starter",
+    name: "Essentials",
     price: 29,
-    description: "Perfect for small businesses just getting started",
+    description: "For businesses beginning their journey",
     popular: false,
     features: [
-      { text: "500 conversations/month", included: true },
-      { text: "2 widget templates", included: true },
-      { text: "10 pages to crawl", included: true },
-      { text: "Basic analytics", included: true },
-      { text: "SiteWise branding + mascot", included: true },
-      { text: "Color customization", included: false },
-      { text: "Custom avatar", included: false },
-      { text: "White-label option", included: false },
+      "500 conversations monthly",
+      "2 widget styles",
+      "10 pages indexed",
+      "Core analytics",
+      "Standard branding",
     ],
   },
   {
-    name: "Pro",
+    name: "Professional",
     price: 79,
-    description: "For growing businesses that need more power",
+    description: "For brands that demand more",
     popular: true,
     features: [
-      { text: "2,000 conversations/month", included: true },
-      { text: "2 widget templates", included: true },
-      { text: "50 pages to crawl", included: true },
-      { text: "Advanced analytics", included: true },
-      { text: "\"Powered by SiteWise.ai\" only", included: true },
-      { text: "Full color customization", included: true },
-      { text: "Custom avatar", included: true },
-      { text: "White-label option", included: false },
+      "2,000 conversations monthly",
+      "Complete customization",
+      "50 pages indexed",
+      "Advanced analytics",
+      "Custom avatar & colors",
+      "Priority support",
     ],
   },
   {
     name: "Enterprise",
     price: null,
-    description: "For agencies and large organizations",
+    description: "Bespoke solutions for distinguished organizations",
     popular: false,
     features: [
-      { text: "Unlimited conversations", included: true },
-      { text: "2 widget templates", included: true },
-      { text: "Unlimited pages to crawl", included: true },
-      { text: "Advanced analytics + export", included: true },
-      { text: "Full white-label", included: true },
-      { text: "Full color customization", included: true },
-      { text: "Custom avatar", included: true },
-      { text: "Priority support", included: true },
+      "Unlimited conversations",
+      "Unlimited pages",
+      "Full white-label",
+      "Advanced analytics & export",
+      "Dedicated support",
+      "Custom integrations",
     ],
   },
 ];
 
 const Pricing = () => {
   return (
-    <section id="pricing" className="py-20 md:py-32">
+    <section id="pricing" className="py-24 md:py-36">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
+        {/* Section header - Elegant */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-2xl mx-auto mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Simple, transparent pricing
+          <p className="text-sm text-primary uppercase tracking-widest mb-4">Investment</p>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-6">
+            Transparent pricing
           </h2>
           <p className="text-lg text-muted-foreground">
-            Start free, upgrade when you need more. No hidden fees, cancel anytime.
+            Select the plan that aligns with your ambitions. Upgrade anytime.
           </p>
         </motion.div>
 
-        {/* Pricing cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Pricing cards - Premium design */}
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -83,91 +77,84 @@ const Pricing = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative rounded-2xl border ${
+              className={`relative rounded-2xl ${
                 plan.popular
-                  ? "border-primary bg-card shadow-xl scale-105"
-                  : "border-border bg-card"
+                  ? "bg-foreground text-card border-0 shadow-premium scale-[1.02]"
+                  : "bg-card border border-border"
               }`}
             >
-              {/* Popular badge */}
+              {/* Popular indicator - Subtle */}
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <div className="inline-flex items-center space-x-1 bg-primary text-primary-foreground rounded-full px-4 py-1 text-sm font-medium">
-                    <Sparkles className="w-4 h-4" />
-                    <span>Most Popular</span>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <div className="bg-primary text-primary-foreground rounded-full px-4 py-1 text-xs font-medium tracking-wide">
+                    Recommended
                   </div>
                 </div>
               )}
 
-              <div className="p-6 lg:p-8">
+              <div className="p-8">
                 {/* Plan header */}
-                <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground">
+                <div className="mb-8">
+                  <h3 className="font-serif text-xl font-medium mb-2">{plan.name}</h3>
+                  <p className={`text-sm ${plan.popular ? "text-card/70" : "text-muted-foreground"}`}>
                     {plan.description}
                   </p>
                 </div>
 
-                {/* Price */}
-                <div className="mb-6">
+                {/* Price - Elegant display */}
+                <div className="mb-8 pb-8 border-b border-current/10">
                   {plan.price !== null ? (
                     <div className="flex items-baseline">
-                      <span className="text-4xl font-bold">${plan.price}</span>
-                      <span className="text-muted-foreground ml-2">/month</span>
+                      <span className="font-serif text-4xl font-medium">${plan.price}</span>
+                      <span className={`ml-2 text-sm ${plan.popular ? "text-card/60" : "text-muted-foreground"}`}>/month</span>
                     </div>
                   ) : (
-                    <div className="text-4xl font-bold">Custom</div>
+                    <div className="font-serif text-4xl font-medium">Custom</div>
                   )}
                 </div>
 
-                {/* CTA */}
-                <Link to="/signup">
-                  <Button
-                    className="w-full mb-6"
-                    variant={plan.popular ? "default" : "outline"}
-                  >
-                    {plan.price !== null ? "Get Started" : "Contact Sales"}
-                  </Button>
-                </Link>
-
-                {/* Features list */}
-                <ul className="space-y-3">
+                {/* Features list - Clean */}
+                <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, featureIndex) => (
                     <li
                       key={featureIndex}
                       className="flex items-start space-x-3"
                     >
-                      {feature.included ? (
-                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <X className="w-5 h-5 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
-                      )}
-                      <span
-                        className={
-                          feature.included
-                            ? "text-foreground"
-                            : "text-muted-foreground/50"
-                        }
-                      >
-                        {feature.text}
+                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.popular ? "text-primary" : "text-primary"}`} />
+                      <span className={`text-sm ${plan.popular ? "text-card/90" : "text-foreground"}`}>
+                        {feature}
                       </span>
                     </li>
                   ))}
                 </ul>
+
+                {/* CTA - Contextual styling */}
+                <Link to="/signup">
+                  <Button
+                    className={`w-full ${
+                      plan.popular 
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                        : ""
+                    }`}
+                    variant={plan.popular ? "default" : "outline"}
+                  >
+                    {plan.price !== null ? "Begin today" : "Contact us"}
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Bottom note */}
+        {/* Bottom note - Refined */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center text-muted-foreground mt-12"
+          transition={{ delay: 0.4 }}
+          className="text-center text-sm text-muted-foreground mt-16"
         >
-          All plans include a 14-day free trial. No credit card required.
+          14-day trial included with every plan. No commitment required.
         </motion.p>
       </div>
     </section>
