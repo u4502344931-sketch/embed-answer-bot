@@ -5,6 +5,7 @@ import Pricing from "@/components/landing/Pricing";
 import FAQ from "@/components/landing/FAQ";
 import CTA from "@/components/landing/CTA";
 import Footer from "@/components/landing/Footer";
+import FloatingChatWidget from "@/components/landing/FloatingChatWidget";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
         <CTA />
       </main>
       <Footer />
+      <FloatingChatWidget />
     </div>
   );
 };
