@@ -12,7 +12,9 @@ import {
   MessageSquare, 
   MessageCircle,
   Save,
-  Sparkles
+  Sparkles,
+  Brain,
+  Info
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -28,6 +30,7 @@ const WidgetSettings = () => {
   const [welcomeMessage, setWelcomeMessage] = useState("Hi! How can I help you today?");
   const [position, setPosition] = useState<"bottom-right" | "bottom-left">("bottom-right");
   const [headerTitle, setHeaderTitle] = useState("Chat with us");
+  const [aiInstructions, setAiInstructions] = useState("You are a helpful customer support assistant. Be friendly, concise, and professional. Answer questions about our products, pricing, and services.");
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -209,6 +212,47 @@ const WidgetSettings = () => {
                     placeholder="Hi! How can I help you today?"
                     rows={3}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI Instructions */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-primary" />
+                  <CardTitle>AI Instructions</CardTitle>
+                </div>
+                <CardDescription>
+                  Tell your AI assistant how to behave and what to know
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="aiInstructions">System Prompt</Label>
+                  <Textarea 
+                    id="aiInstructions"
+                    value={aiInstructions}
+                    onChange={(e) => setAiInstructions(e.target.value)}
+                    placeholder="You are a helpful customer support assistant..."
+                    rows={5}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground flex items-start gap-1.5 mt-2">
+                    <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                    This defines your AI's personality, tone, and knowledge. Be specific about your business, products, and how you want the AI to respond.
+                  </p>
+                </div>
+                
+                <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                  <p className="text-sm font-medium">Example instructions:</p>
+                  <div className="space-y-2 text-xs text-muted-foreground">
+                    <p>• "You are a customer support agent for [Company Name], an e-commerce store selling organic skincare products."</p>
+                    <p>• "Always be friendly and use emojis sparingly. Keep responses under 100 words."</p>
+                    <p>• "If asked about refunds, explain our 30-day money-back guarantee policy."</p>
+                    <p>• "For pricing questions, direct users to our pricing page at /pricing."</p>
+                    <p>• "Never make up information. If unsure, offer to connect them with a human agent."</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
