@@ -152,10 +152,23 @@ const ChatWidgetDemo = () => {
         {/* Message bubble dialog */}
         <motion.div
           initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2"
-        >
+          animate={{ 
+            opacity: 1, 
+            y: [0, -4, 0], 
+            scale: 1 
+          }}
+          transition={{ 
+            delay: 2,
+            duration: 0.5, 
+            ease: [0.22, 1, 0.36, 1],
+            y: {
+              delay: 2.5,
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
+          className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2">
           <p className="text-sm text-foreground font-medium">👋 Need help?</p>
           <p className="text-xs text-muted-foreground mt-1">Chat with us now!</p>
           {/* Speech bubble arrow */}
