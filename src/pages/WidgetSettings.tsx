@@ -11,7 +11,8 @@ import {
   ArrowLeft, 
   MessageSquare, 
   MessageCircle,
-  Save
+  Save,
+  Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,7 +24,7 @@ const WidgetSettings = () => {
   const { toast } = useToast();
 
   // Widget settings state
-  const [widgetTemplate, setWidgetTemplate] = useState<"panel" | "bubble">("bubble");
+  const [widgetTemplate, setWidgetTemplate] = useState<"panel" | "bubble" | "chatgpt">("bubble");
   const [welcomeMessage, setWelcomeMessage] = useState("Hi! How can I help you today?");
   const [position, setPosition] = useState<"bottom-right" | "bottom-left">("bottom-right");
   const [headerTitle, setHeaderTitle] = useState("Chat with us");
@@ -107,8 +108,8 @@ const WidgetSettings = () => {
               <CardContent>
                 <RadioGroup 
                   value={widgetTemplate} 
-                  onValueChange={(value) => setWidgetTemplate(value as "panel" | "bubble")}
-                  className="grid grid-cols-2 gap-4"
+                  onValueChange={(value) => setWidgetTemplate(value as "panel" | "bubble" | "chatgpt")}
+                  className="grid grid-cols-3 gap-4"
                 >
                   <Label 
                     htmlFor="bubble" 
@@ -120,9 +121,9 @@ const WidgetSettings = () => {
                     <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-3">
                       <MessageCircle className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <span className="font-medium">Floating Bubble</span>
+                    <span className="font-medium text-sm">Floating Bubble</span>
                     <span className="text-xs text-muted-foreground text-center mt-1">
-                      Small icon that expands on click
+                      Classic chat icon
                     </span>
                   </Label>
                   <Label 
@@ -135,9 +136,24 @@ const WidgetSettings = () => {
                     <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-3">
                       <MessageSquare className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <span className="font-medium">Chat Panel</span>
+                    <span className="font-medium text-sm">Chat Panel</span>
                     <span className="text-xs text-muted-foreground text-center mt-1">
-                      Full sliding panel from side
+                      Side panel style
+                    </span>
+                  </Label>
+                  <Label 
+                    htmlFor="chatgpt" 
+                    className={`flex flex-col items-center p-4 border rounded-lg cursor-pointer transition-colors ${
+                      widgetTemplate === "chatgpt" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <RadioGroupItem value="chatgpt" id="chatgpt" className="sr-only" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center mb-3">
+                      <Sparkles className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    <span className="font-medium text-sm">ChatGPT Style</span>
+                    <span className="text-xs text-muted-foreground text-center mt-1">
+                      Modern AI prompt
                     </span>
                   </Label>
                 </RadioGroup>
@@ -248,7 +264,7 @@ const WidgetSettings = () => {
                         <MessageCircle className="w-6 h-6 text-primary-foreground" />
                       </div>
                     </div>
-                  ) : (
+                  ) : widgetTemplate === "panel" ? (
                     <div 
                       className={`absolute bottom-6 top-12 ${position === "bottom-right" ? "right-6" : "left-6"} w-72`}
                     >
@@ -266,6 +282,33 @@ const WidgetSettings = () => {
                             Type your message...
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* ChatGPT Style Preview */
+                    <div 
+                      className={`absolute bottom-6 ${position === "bottom-right" ? "right-6" : "left-6"} left-6 right-6`}
+                    >
+                      {/* ChatGPT style prompt bar */}
+                      <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden">
+                        <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/30">
+                          <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/70 rounded-lg flex items-center justify-center">
+                            <Sparkles className="w-3 h-3 text-primary-foreground" />
+                          </div>
+                          <span className="text-xs font-medium">{headerTitle}</span>
+                        </div>
+                        <div className="p-3">
+                          <div className="bg-muted/50 rounded-xl h-10 px-4 flex items-center text-sm text-muted-foreground">
+                            Ask me anything...
+                          </div>
+                          <div className="flex items-center justify-center gap-3 mt-2">
+                            <span className="text-[9px] text-muted-foreground">Try: "What are your pricing plans?"</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Floating button */}
+                      <div className={`w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg cursor-pointer mt-3 ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}>
+                        <Sparkles className="w-5 h-5 text-primary-foreground" />
                       </div>
                     </div>
                   )}
