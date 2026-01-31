@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
   MessageSquare, 
   Users, 
   TrendingUp, 
-  Settings, 
   FileText, 
   Code, 
   LogOut,
@@ -123,12 +123,40 @@ const Dashboard = () => {
 
       {/* Main content */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome section */}
-        <div className="mb-10">
-          <h1 className="font-serif text-3xl font-semibold mb-2">Welcome to SiteWise</h1>
-          <p className="text-muted-foreground">
-            Get started by adding your content and customizing your assistant.
-          </p>
+        {/* Welcome section with plan indicator */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-10">
+          <div>
+            <h1 className="font-serif text-3xl font-semibold mb-2">Welcome to SiteWise</h1>
+            <p className="text-muted-foreground">
+              Get started by adding your content and customizing your assistant.
+            </p>
+          </div>
+          
+          {/* Plan indicator */}
+          <Card className="sm:min-w-[280px] border-primary/20 bg-primary/5">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/10">
+                    Starter Plan
+                  </Badge>
+                </div>
+                <Button variant="outline" size="sm" className="text-xs h-7">
+                  Upgrade
+                </Button>
+              </div>
+              <div className="space-y-1.5 text-sm">
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Conversations</span>
+                  <span className="font-medium text-foreground">0 / 500</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Pages crawled</span>
+                  <span className="font-medium text-foreground">0 / 10</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Stats */}
