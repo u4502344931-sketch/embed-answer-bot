@@ -147,14 +147,30 @@ const ChatWidgetDemo = () => {
         </div>
       </div>
 
-      {/* Floating bubble - Premium version */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -bottom-4 -right-4 w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer"
-      >
-        <MessageCircle className="w-6 h-6 text-card" />
-      </motion.div>
+      {/* Floating bubble with message dialog */}
+      <div className="absolute -bottom-4 -right-4">
+        {/* Message bubble dialog */}
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2"
+        >
+          <p className="text-sm text-foreground font-medium">👋 Need help?</p>
+          <p className="text-xs text-muted-foreground mt-1">Chat with us now!</p>
+          {/* Speech bubble arrow */}
+          <div className="absolute -bottom-2 right-5 w-4 h-4 bg-card border-b border-r border-border rotate-45" />
+        </motion.div>
+        
+        {/* Floating chat button */}
+        <motion.div
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer"
+        >
+          <MessageCircle className="w-6 h-6 text-card" />
+        </motion.div>
+      </div>
     </div>
   );
 };
