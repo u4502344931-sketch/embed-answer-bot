@@ -18,13 +18,37 @@ type ChatMessage = {
   content: string;
 };
 
-// More compelling demo conversation showing real value
-const demoConversation: DemoMessage[] = [
-  { id: 1, text: "Hi! I saw your product but I'm not sure if it integrates with Shopify?", isBot: false },
-  { id: 2, text: "Great question! Yes, SiteWise integrates seamlessly with Shopify. Just paste one line of code in your theme, and your AI assistant will instantly know your entire product catalog, shipping policies, and FAQs. Most stores are live within 5 minutes!", isBot: true },
-  { id: 3, text: "That's amazing! Can it handle refund questions automatically?", isBot: false },
-  { id: 4, text: "Absolutely! It learns your refund policy and handles those queries 24/7. Our merchants report 73% fewer support tickets within the first month. Would you like to start a free trial?", isBot: true },
+// Compelling demo conversations showing various use cases
+const demoConversations = [
+  // E-commerce / Shopify
+  [
+    { id: 1, text: "Does this integrate with my Shopify store?", isBot: false },
+    { id: 2, text: "Yes! Just paste one line of code and your AI assistant instantly knows your entire product catalog, shipping policies, and FAQs. Most stores are live in 5 minutes!", isBot: true },
+  ],
+  // SaaS / Tech
+  [
+    { id: 3, text: "How does your API rate limiting work?", isBot: false },
+    { id: 4, text: "Great question! Free tier gets 1,000 requests/day, Pro gets 50,000, and Enterprise is unlimited. All plans include webhook support and real-time analytics.", isBot: true },
+  ],
+  // Healthcare / Clinic
+  [
+    { id: 5, text: "Can patients book appointments through the chat?", isBot: false },
+    { id: 6, text: "Absolutely! The AI can check your calendar availability, book appointments, and send confirmation emails. HIPAA compliant and integrates with most practice management systems.", isBot: true },
+  ],
+  // Real Estate
+  [
+    { id: 7, text: "I'm looking for a 3-bedroom house under $500k", isBot: false },
+    { id: 8, text: "I found 12 properties matching your criteria! Here are the top 3 based on your preferences. Would you like to schedule a viewing for any of these?", isBot: true },
+  ],
+  // Education
+  [
+    { id: 9, text: "What courses do you offer for beginners?", isBot: false },
+    { id: 10, text: "We have 15 beginner-friendly courses! Based on your interests, I'd recommend starting with 'Web Development 101' or 'Data Science Fundamentals'. Both include certificates!", isBot: true },
+  ],
 ];
+
+// Flatten and cycle through conversations
+const demoConversation: DemoMessage[] = demoConversations.flat();
 
 const ChatWidgetDemo = () => {
   const [demoMessages, setDemoMessages] = useState<DemoMessage[]>([]);
