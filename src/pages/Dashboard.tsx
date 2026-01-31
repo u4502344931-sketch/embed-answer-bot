@@ -141,7 +141,12 @@ const Dashboard = () => {
                     Starter Plan
                   </Badge>
                 </div>
-                <Button variant="outline" size="sm" className="text-xs h-7">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-7"
+                  onClick={() => navigate("/dashboard/pricing")}
+                >
                   Upgrade
                 </Button>
               </div>
