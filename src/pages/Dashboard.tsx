@@ -11,7 +11,8 @@ import {
   FileText, 
   Code, 
   LogOut,
-  Bot
+  Bot,
+  BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -88,10 +89,10 @@ const Dashboard = () => {
       href: "/dashboard/embed" 
     },
     { 
-      title: "Account Settings", 
-      description: "Manage your subscription", 
-      icon: Settings, 
-      href: "/dashboard/settings" 
+      title: "Analytics", 
+      description: "Track conversations & engagement", 
+      icon: BarChart3, 
+      href: "/dashboard/analytics" 
     },
   ];
 

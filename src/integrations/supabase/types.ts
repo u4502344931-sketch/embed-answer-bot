@@ -59,6 +59,110 @@ export type Database = {
         }
         Relationships: []
       }
+      conversations: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          id: string
+          metadata: Json | null
+          started_at: string
+          status: string
+          user_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          started_at?: string
+          status?: string
+          user_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          started_at?: string
+          status?: string
+          user_id?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      daily_stats: {
+        Row: {
+          avg_response_time_ms: number | null
+          created_at: string
+          date: string
+          id: string
+          total_conversations: number | null
+          total_messages: number | null
+          unique_visitors: number | null
+          user_id: string
+        }
+        Insert: {
+          avg_response_time_ms?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          total_conversations?: number | null
+          total_messages?: number | null
+          unique_visitors?: number | null
+          user_id: string
+        }
+        Update: {
+          avg_response_time_ms?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          total_conversations?: number | null
+          total_messages?: number | null
+          unique_visitors?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          response_time_ms: number | null
+          role: string
+          tokens_used: number | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          response_time_ms?: number | null
+          role: string
+          tokens_used?: number | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          response_time_ms?: number | null
+          role?: string
+          tokens_used?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       widget_settings: {
         Row: {
           ai_instructions: string
