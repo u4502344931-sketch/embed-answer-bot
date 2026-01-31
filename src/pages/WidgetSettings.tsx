@@ -37,34 +37,82 @@ const WidgetSettings = () => {
       (event, session) => {
         if (session?.user) {
           setUser(session.user);
+          loadSettings(session.user.id);
         } else {
           navigate("/login");
         }
-        setLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
+        loadSettings(session.user.id);
       } else {
         navigate("/login");
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const loadSettings = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("widget_settings")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setWidgetTemplate(data.widget_template as "panel" | "bubble" | "chatgpt");
+        setPosition(data.position as "bottom-right" | "bottom-left");
+        setHeaderTitle(data.header_title);
+        setWelcomeMessage(data.welcome_message);
+        setAiInstructions(data.ai_instructions);
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = async () => {
+    if (!user) return;
+    
     setSaving(true);
-    // TODO: Save to database
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setSaving(false);
-    toast({
-      title: "Settings saved",
-      description: "Your widget settings have been updated.",
-    });
+    try {
+      const { error } = await supabase
+        .from("widget_settings")
+        .upsert({
+          user_id: user.id,
+          widget_template: widgetTemplate,
+          position: position,
+          header_title: headerTitle,
+          welcome_message: welcomeMessage,
+          ai_instructions: aiInstructions,
+        }, { onConflict: "user_id" });
+
+      if (error) throw error;
+
+      toast({
+        title: "Settings saved",
+        description: "Your widget settings have been updated.",
+      });
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
