@@ -228,6 +228,41 @@ const WidgetSettings = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Let us handle it CTA */}
+                <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <p className="font-medium text-sm">Don't have time? Let us handle it!</p>
+                      <p className="text-xs text-muted-foreground">
+                        Our team will craft the perfect AI instructions tailored to your business. We'll analyze your website and set everything up for you.
+                      </p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="shrink-0 border-primary/30 hover:bg-primary/10"
+                      onClick={() => {
+                        toast({
+                          title: "Request submitted! 🎉",
+                          description: "Our team will reach out within 24 hours to set up your AI assistant.",
+                        });
+                      }}
+                    >
+                      <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                      Set it up for me
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">or configure yourself</span>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="aiInstructions">System Prompt</Label>
                   <Textarea 
