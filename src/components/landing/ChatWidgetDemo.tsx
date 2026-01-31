@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, MessageCircle, User } from "lucide-react";
+import { Send, MessageCircle, User, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 type Message = {
   id: number;
@@ -21,6 +27,8 @@ const ChatWidgetDemo = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [promptValue, setPromptValue] = useState("");
 
   useEffect(() => {
     let currentIndex = 0;
@@ -150,40 +158,109 @@ const ChatWidgetDemo = () => {
       {/* Floating bubble with message dialog */}
       <div className="absolute -bottom-4 -right-4">
         {/* Message bubble dialog */}
-        <motion.div
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ 
-            opacity: 1, 
-            y: [0, -4, 0], 
-            scale: 1 
-          }}
-          transition={{ 
-            delay: 2,
-            duration: 0.5, 
-            ease: [0.22, 1, 0.36, 1],
-            y: {
-              delay: 2.5,
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }
-          }}
-          className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2">
-          <p className="text-sm text-foreground font-medium">👋 Need help?</p>
-          <p className="text-xs text-muted-foreground mt-1">Chat with us now!</p>
-          {/* Speech bubble arrow */}
-          <div className="absolute -bottom-2 right-5 w-4 h-4 bg-card border-b border-r border-border rotate-45" />
-        </motion.div>
+        <AnimatePresence>
+          {!isChatOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ 
+                opacity: 1, 
+                y: [0, -4, 0], 
+                scale: 1 
+              }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              transition={{ 
+                delay: 2,
+                duration: 0.5, 
+                ease: [0.22, 1, 0.36, 1],
+                y: {
+                  delay: 2.5,
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
+              }}
+              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2"
+            >
+              <p className="text-sm text-foreground font-medium">👋 Need help?</p>
+              <p className="text-xs text-muted-foreground mt-1">Chat with us now!</p>
+              {/* Speech bubble arrow */}
+              <div className="absolute -bottom-2 right-5 w-4 h-4 bg-card border-b border-r border-border rotate-45" />
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {/* Floating chat button */}
         <motion.div
           animate={{ y: [0, -6, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer"
+          onClick={() => setIsChatOpen(true)}
+          className="w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
         >
           <MessageCircle className="w-6 h-6 text-card" />
         </motion.div>
       </div>
+
+      {/* ChatGPT-style prompt dialog */}
+      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 bg-transparent border-0 shadow-none fixed bottom-4 top-auto translate-y-0 data-[state=open]:slide-in-from-bottom-4">
+          <VisuallyHidden.Root>
+            <DialogTitle>Chat with SiteWise Assistant</DialogTitle>
+          </VisuallyHidden.Root>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="bg-card border border-border rounded-2xl shadow-premium overflow-hidden"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <span className="font-medium text-sm">SiteWise Assistant</span>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8" 
+                onClick={() => setIsChatOpen(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Prompt input area */}
+            <div className="p-4">
+              <div className="relative">
+                <Input
+                  placeholder="Ask me anything..."
+                  value={promptValue}
+                  onChange={(e) => setPromptValue(e.target.value)}
+                  className="pr-12 h-12 text-base bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/50 rounded-xl"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && promptValue.trim()) {
+                      setPromptValue("");
+                    }
+                  }}
+                />
+                <Button 
+                  size="icon" 
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg"
+                  disabled={!promptValue.trim()}
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-center gap-4 mt-3">
+                <span className="text-[10px] text-muted-foreground">Try: "What are your pricing plans?"</span>
+                <span className="text-[10px] text-muted-foreground">•</span>
+                <span className="text-[10px] text-muted-foreground">"How do I get started?"</span>
+              </div>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
