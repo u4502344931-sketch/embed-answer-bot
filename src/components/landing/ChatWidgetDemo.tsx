@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, MessageCircle, User, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,14 +9,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { streamChat } from "@/lib/chat-stream";
+import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
 
-type Message = {
+type DemoMessage = {
   id: number;
   text: string;
   isBot: boolean;
 };
 
-const demoConversation: Message[] = [
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+const demoConversation: DemoMessage[] = [
   { id: 1, text: "Hello, I'd like to learn about your pricing.", isBot: false },
   { id: 2, text: "Welcome! We offer three elegant plans tailored to your needs: Essentials at $29/mo, Professional at $79/mo, and Enterprise with bespoke pricing. How may I assist you further?", isBot: true },
   { id: 3, text: "What's included in Professional?", isBot: false },
@@ -24,11 +32,15 @@ const demoConversation: Message[] = [
 ];
 
 const ChatWidgetDemo = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<DemoMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [promptValue, setPromptValue] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     let currentIndex = 0;
@@ -53,6 +65,54 @@ const ChatWidgetDemo = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-scroll chat container
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const handleSendMessage = async () => {
+    if (!promptValue.trim() || isLoading) return;
+
+    const userMessage: ChatMessage = { role: "user", content: promptValue.trim() };
+    setChatMessages(prev => [...prev, userMessage]);
+    setPromptValue("");
+    setIsLoading(true);
+
+    let assistantContent = "";
+
+    const upsertAssistant = (nextChunk: string) => {
+      assistantContent += nextChunk;
+      setChatMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant") {
+          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantContent } : m));
+        }
+        return [...prev, { role: "assistant", content: assistantContent }];
+      });
+    };
+
+    try {
+      await streamChat({
+        messages: [...chatMessages, userMessage],
+        onDelta: (chunk) => upsertAssistant(chunk),
+        onDone: () => setIsLoading(false),
+        onError: (error) => {
+          toast({
+            title: "Error",
+            description: error,
+            variant: "destructive",
+          });
+          setIsLoading(false);
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -230,8 +290,56 @@ const ChatWidgetDemo = () => {
               </Button>
             </div>
 
+            {/* Chat messages area */}
+            {chatMessages.length > 0 && (
+              <div 
+                ref={chatContainerRef}
+                className="max-h-80 overflow-y-auto p-4 space-y-3"
+              >
+                {chatMessages.map((msg, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[80%] px-4 py-2.5 rounded-2xl ${
+                        msg.role === "user"
+                          ? "bg-foreground text-card rounded-br-sm"
+                          : "bg-muted rounded-bl-sm"
+                      }`}
+                    >
+                      {msg.role === "assistant" ? (
+                        <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
+                      ) : (
+                        <p className="text-sm">{msg.content}</p>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+                {isLoading && chatMessages[chatMessages.length - 1]?.role === "user" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex justify-start"
+                  >
+                    <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-sm">
+                      <div className="flex space-x-1.5">
+                        <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )}
+
             {/* Prompt input area */}
-            <div className="p-4">
+            <div className="p-4 border-t border-border">
               <div className="relative">
                 <Input
                   placeholder="Ask me anything..."
@@ -239,24 +347,28 @@ const ChatWidgetDemo = () => {
                   onChange={(e) => setPromptValue(e.target.value)}
                   className="pr-12 h-12 text-base bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/50 rounded-xl"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && promptValue.trim()) {
-                      setPromptValue("");
+                    if (e.key === "Enter" && promptValue.trim() && !isLoading) {
+                      handleSendMessage();
                     }
                   }}
+                  disabled={isLoading}
                 />
                 <Button 
                   size="icon" 
                   className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg"
-                  disabled={!promptValue.trim()}
+                  disabled={!promptValue.trim() || isLoading}
+                  onClick={handleSendMessage}
                 >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
-              <div className="flex items-center justify-center gap-4 mt-3">
-                <span className="text-[10px] text-muted-foreground">Try: "What are your pricing plans?"</span>
-                <span className="text-[10px] text-muted-foreground">•</span>
-                <span className="text-[10px] text-muted-foreground">"How do I get started?"</span>
-              </div>
+              {chatMessages.length === 0 && (
+                <div className="flex items-center justify-center gap-4 mt-3">
+                  <span className="text-[10px] text-muted-foreground">Try: "What are your pricing plans?"</span>
+                  <span className="text-[10px] text-muted-foreground">•</span>
+                  <span className="text-[10px] text-muted-foreground">"How do I get started?"</span>
+                </div>
+              )}
             </div>
           </motion.div>
         </DialogContent>
