@@ -39,6 +39,7 @@ const ChatWidgetDemo = () => {
   const [promptValue, setPromptValue] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showBubbleMessage, setShowBubbleMessage] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -215,11 +216,11 @@ const ChatWidgetDemo = () => {
         </div>
       </div>
 
-      {/* Floating bubble with message dialog */}
-      <div className="absolute -bottom-4 -right-4">
+      {/* Fixed widget at bottom right of screen */}
+      <div className="fixed bottom-6 right-6 z-50">
         {/* Message bubble dialog */}
         <AnimatePresence>
-          {!isChatOpen && (
+          {!isChatOpen && showBubbleMessage && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ 
@@ -239,8 +240,18 @@ const ChatWidgetDemo = () => {
                   ease: "easeInOut"
                 }
               }}
-              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 min-w-[180px] mb-2"
+              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 pr-8 min-w-[180px] mb-2"
             >
+              {/* Close button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowBubbleMessage(false);
+                }}
+                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+              >
+                <X className="w-3 h-3 text-muted-foreground" />
+              </button>
               <p className="text-sm text-foreground font-medium">👋 Need help?</p>
               <p className="text-xs text-muted-foreground mt-1">Chat with us now!</p>
               {/* Speech bubble arrow */}
