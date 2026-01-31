@@ -59,6 +59,42 @@ export type Database = {
         }
         Relationships: []
       }
+      widget_settings: {
+        Row: {
+          ai_instructions: string
+          created_at: string
+          header_title: string
+          id: string
+          position: string
+          updated_at: string
+          user_id: string
+          welcome_message: string
+          widget_template: string
+        }
+        Insert: {
+          ai_instructions?: string
+          created_at?: string
+          header_title?: string
+          id?: string
+          position?: string
+          updated_at?: string
+          user_id: string
+          welcome_message?: string
+          widget_template?: string
+        }
+        Update: {
+          ai_instructions?: string
+          created_at?: string
+          header_title?: string
+          id?: string
+          position?: string
+          updated_at?: string
+          user_id?: string
+          welcome_message?: string
+          widget_template?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
