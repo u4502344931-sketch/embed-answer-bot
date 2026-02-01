@@ -52,51 +52,54 @@ const EmbedCode = () => {
   }, [navigate]);
 
   const widgetId = user?.id?.slice(0, 8) || "xxxxxxxx";
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const widgetLoaderUrl = `${supabaseUrl}/functions/v1/widget-loader?id=${widgetId}`;
   
   const scriptCode = `<!-- SiteWise Chat Widget -->
-<script>
-  (function(w,d,s,o,f,js,fjs){
-    w['SiteWise']=o;w[o]=w[o]||function(){
-    (w[o].q=w[o].q||[]).push(arguments)};
-    js=d.createElement(s);fjs=d.getElementsByTagName(s)[0];
-    js.id=o;js.src=f;js.async=1;fjs.parentNode.insertBefore(js,fjs);
-  }(window,document,'script','sw','https://widget.sitewise.ai/loader.js'));
-  sw('init', '${widgetId}');
-</script>`;
+<script src="${widgetLoaderUrl}" async></script>`;
 
-  const reactCode = `// Install the package
-npm install @sitewise/react-widget
+  const reactCode = `// Install the package (coming soon)
+// npm install @sitewise/react-widget
 
-// In your App.tsx or layout component
-import { SiteWiseWidget } from '@sitewise/react-widget';
+// Or use the script tag approach in your index.html:
+// <script src="${widgetLoaderUrl}" async></script>
+
+// Alternative: Load via useEffect
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = '${widgetLoaderUrl}';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <>
       {/* Your app content */}
-      <SiteWiseWidget widgetId="${widgetId}" />
     </>
   );
 }`;
 
-  const wordpressCode = `// Method 1: Add to your theme's functions.php
+  const wordpressCode = `// Add to your theme's functions.php
 function add_sitewise_widget() {
   wp_enqueue_script(
     'sitewise-widget',
-    'https://widget.sitewise.ai/loader.js',
+    '${widgetLoaderUrl}',
     array(),
     null,
     true
   );
-  wp_add_inline_script(
-    'sitewise-widget',
-    "sw('init', '${widgetId}');"
-  );
 }
 add_action('wp_enqueue_scripts', 'add_sitewise_widget');
 
-// Method 2: Or use our WordPress plugin
-// Download from: wordpress.org/plugins/sitewise-chat`;
+// Or add this to your theme's footer.php before </body>:
+// <script src="${widgetLoaderUrl}" async></script>`;
 
   const handleCopy = async (code: string, type: 'script' | 'react' | 'wordpress') => {
     await navigator.clipboard.writeText(code);
