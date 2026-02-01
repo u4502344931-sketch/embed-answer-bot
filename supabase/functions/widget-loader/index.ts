@@ -24,7 +24,7 @@ serve(async (req) => {
   }
 
   // Get the base URL for the widget page
-  const baseUrl = Deno.env.get("WIDGET_BASE_URL") || "https://id-preview--781977cf-bfc6-40db-bd1e-d9c5ab824bd2.lovable.app";
+  const baseUrl = Deno.env.get("WIDGET_BASE_URL") || "https://embed-answer-bot.lovable.app";
 
   // Generate the loader script
   const loaderScript = `
