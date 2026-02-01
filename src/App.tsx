@@ -13,6 +13,7 @@ import EmbedCode from "./pages/EmbedCode";
 import Analytics from "./pages/Analytics";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
+import Widget from "./pages/Widget";
 import FloatingChatWidget from "@/components/landing/FloatingChatWidget";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/dashboard/embed" element={<EmbedCode />} />
           <Route path="/dashboard/analytics" element={<Analytics />} />
           <Route path="/dashboard/pricing" element={<Pricing />} />
+          <Route path="/widget/:widgetId" element={<Widget />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
