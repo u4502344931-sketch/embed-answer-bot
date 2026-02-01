@@ -57,7 +57,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
   // Notify parent of size changes
   useEffect(() => {
     const width = isOpen ? 380 : 80;
-    const height = isOpen ? 520 : 80;
+    const height = isOpen ? 540 : 80;
     
     window.parent.postMessage(
       { type: "sitewise-resize", width, height },
@@ -144,14 +144,14 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
   };
 
   const positionClasses = {
-    "bottom-right": "bottom-4 right-4",
-    "bottom-left": "bottom-4 left-4",
-    "top-right": "top-4 right-4",
-    "top-left": "top-4 left-4",
+    "bottom-right": "bottom-0 right-0",
+    "bottom-left": "bottom-0 left-0",
+    "top-right": "top-0 right-0",
+    "top-left": "top-0 left-0",
   };
 
   return (
-    <div className={`fixed ${positionClasses[position as keyof typeof positionClasses] || positionClasses["bottom-right"]} z-50`}>
+    <div className={`fixed ${positionClasses[position as keyof typeof positionClasses] || positionClasses["bottom-right"]} z-50 p-4`}>
       {/* Chat bubble when closed */}
       <AnimatePresence>
         {!isOpen && (
