@@ -113,14 +113,10 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Transparent background for embedded widget iframe */
-  body.widget-embed,
-  body.widget-embed * {
+  /* Transparent background for embedded widget iframe - only affects body, not widget components */
+  body.widget-embed {
+    background: transparent !important;
     background-color: transparent !important;
-  }
-  
-  body.widget-embed .widget-content {
-    background-color: inherit;
   }
 
   /* Elegant serif headlines */
