@@ -14,7 +14,8 @@ import {
   Save,
   Sparkles,
   Brain,
-  Info
+  Info,
+  Palette
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -31,6 +32,8 @@ const WidgetSettings = () => {
   const [position, setPosition] = useState<"bottom-right" | "bottom-left">("bottom-right");
   const [headerTitle, setHeaderTitle] = useState("Chat with us");
   const [aiInstructions, setAiInstructions] = useState("You are a helpful customer support assistant. Be friendly, concise, and professional. Answer questions about our products, pricing, and services.");
+  const [primaryColor, setPrimaryColor] = useState("#2563eb");
+  const [textColor, setTextColor] = useState("#ffffff");
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -73,6 +76,8 @@ const WidgetSettings = () => {
         setHeaderTitle(data.header_title);
         setWelcomeMessage(data.welcome_message);
         setAiInstructions(data.ai_instructions);
+        setPrimaryColor(data.primary_color || "#2563eb");
+        setTextColor(data.text_color || "#ffffff");
       }
     } catch (error) {
       console.error("Error loading settings:", error);
@@ -95,6 +100,8 @@ const WidgetSettings = () => {
           header_title: headerTitle,
           welcome_message: welcomeMessage,
           ai_instructions: aiInstructions,
+          primary_color: primaryColor,
+          text_color: textColor,
         }, { onConflict: "user_id" });
 
       if (error) throw error;
@@ -235,6 +242,102 @@ const WidgetSettings = () => {
               </CardContent>
             </Card>
 
+            {/* Color Settings */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-primary" />
+                  <CardTitle>Brand Colors</CardTitle>
+                </div>
+                <CardDescription>Customize your widget to match your brand</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="primaryColor">Primary Color</Label>
+                    <div className="flex gap-2">
+                      <div 
+                        className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        <input
+                          type="color"
+                          id="primaryColor"
+                          value={primaryColor}
+                          onChange={(e) => setPrimaryColor(e.target.value)}
+                          className="w-full h-full opacity-0 cursor-pointer"
+                        />
+                      </div>
+                      <Input 
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        placeholder="#2563eb"
+                        className="font-mono uppercase"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Button & header background</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="textColor">Text Color</Label>
+                    <div className="flex gap-2">
+                      <div 
+                        className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                        style={{ backgroundColor: textColor }}
+                      >
+                        <input
+                          type="color"
+                          id="textColor"
+                          value={textColor}
+                          onChange={(e) => setTextColor(e.target.value)}
+                          className="w-full h-full opacity-0 cursor-pointer"
+                        />
+                      </div>
+                      <Input 
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        placeholder="#ffffff"
+                        className="font-mono uppercase"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Icon & header text</p>
+                  </div>
+                </div>
+                
+                {/* Preset colors */}
+                <div className="space-y-2">
+                  <Label>Quick Presets</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { primary: "#2563eb", text: "#ffffff", name: "Blue" },
+                      { primary: "#7c3aed", text: "#ffffff", name: "Purple" },
+                      { primary: "#059669", text: "#ffffff", name: "Green" },
+                      { primary: "#dc2626", text: "#ffffff", name: "Red" },
+                      { primary: "#ea580c", text: "#ffffff", name: "Orange" },
+                      { primary: "#0891b2", text: "#ffffff", name: "Teal" },
+                      { primary: "#171717", text: "#ffffff", name: "Black" },
+                      { primary: "#fbbf24", text: "#171717", name: "Gold" },
+                    ].map((preset) => (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() => {
+                          setPrimaryColor(preset.primary);
+                          setTextColor(preset.text);
+                        }}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                      >
+                        <div 
+                          className="w-4 h-4 rounded-full border border-border/50"
+                          style={{ backgroundColor: preset.primary }}
+                        />
+                        <span className="text-xs">{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Text Settings */}
             <Card>
               <CardHeader>
@@ -372,7 +475,7 @@ const WidgetSettings = () => {
                     >
                       {/* Chat window (expanded state preview) */}
                       <div className="bg-card border border-border rounded-xl shadow-lg w-72 mb-4 overflow-hidden">
-                        <div className="bg-primary text-primary-foreground p-3">
+                        <div className="p-3" style={{ backgroundColor: primaryColor, color: textColor }}>
                           <p className="font-medium text-sm">{headerTitle}</p>
                         </div>
                         <div className="p-3 h-32 flex items-start">
@@ -387,8 +490,11 @@ const WidgetSettings = () => {
                         </div>
                       </div>
                       {/* Bubble */}
-                      <div className={`w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg cursor-pointer ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}>
-                        <MessageCircle className="w-6 h-6 text-primary-foreground" />
+                      <div 
+                        className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg cursor-pointer ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        <MessageCircle className="w-6 h-6" style={{ color: textColor }} />
                       </div>
                     </div>
                   ) : widgetTemplate === "panel" ? (
@@ -396,7 +502,7 @@ const WidgetSettings = () => {
                       className={`absolute bottom-6 top-12 ${position === "bottom-right" ? "right-6" : "left-6"} w-72`}
                     >
                       <div className="bg-card border border-border rounded-xl shadow-lg h-full flex flex-col overflow-hidden">
-                        <div className="bg-primary text-primary-foreground p-4">
+                        <div className="p-4" style={{ backgroundColor: primaryColor, color: textColor }}>
                           <p className="font-medium">{headerTitle}</p>
                         </div>
                         <div className="flex-1 p-4">
@@ -419,8 +525,11 @@ const WidgetSettings = () => {
                       {/* ChatGPT style prompt bar */}
                       <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden">
                         <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/30">
-                          <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary/70 rounded-lg flex items-center justify-center">
-                            <Sparkles className="w-3 h-3 text-primary-foreground" />
+                          <div 
+                            className="w-6 h-6 rounded-lg flex items-center justify-center"
+                            style={{ backgroundColor: primaryColor }}
+                          >
+                            <Sparkles className="w-3 h-3" style={{ color: textColor }} />
                           </div>
                           <span className="text-xs font-medium">{headerTitle}</span>
                         </div>
@@ -434,8 +543,11 @@ const WidgetSettings = () => {
                         </div>
                       </div>
                       {/* Floating button */}
-                      <div className={`w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg cursor-pointer mt-3 ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}>
-                        <Sparkles className="w-5 h-5 text-primary-foreground" />
+                      <div 
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg cursor-pointer mt-3 ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        <Sparkles className="w-5 h-5" style={{ color: textColor }} />
                       </div>
                     </div>
                   )}
