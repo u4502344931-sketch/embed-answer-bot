@@ -13,6 +13,7 @@ import EmbedCode from "./pages/EmbedCode";
 import Analytics from "./pages/Analytics";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
+import FloatingChatWidget from "@/components/landing/FloatingChatWidget";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <FloatingChatWidget />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
