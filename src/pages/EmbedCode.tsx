@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 const EmbedCode = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [widgetId, setWidgetId] = useState<string | null>(null);
   const [copiedScript, setCopiedScript] = useState(false);
   const [copiedReact, setCopiedReact] = useState(false);
   const [copiedWordpress, setCopiedWordpress] = useState(false);
@@ -51,18 +52,47 @@ const EmbedCode = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const widgetId = user?.id?.slice(0, 8) || "xxxxxxxx";
+  useEffect(() => {
+    const loadWidgetId = async () => {
+      if (!user?.id) return;
+
+      // IMPORTANT: widgetId must be the widget_settings.id (UUID), not the user id.
+      // Using a short/non-UUID id breaks content lookup for RAG in the chat backend.
+      const { data, error } = await supabase
+        .from("widget_settings")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching widget id:", error);
+        setWidgetId(null);
+        return;
+      }
+
+      if (data?.id) {
+        setWidgetId(data.id);
+      } else {
+        setWidgetId(null);
+      }
+    };
+
+    loadWidgetId();
+  }, [user?.id]);
+
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const widgetLoaderUrl = `${supabaseUrl}/functions/v1/widget-loader?id=${widgetId}`;
+  const widgetLoaderUrl = widgetId
+    ? `${supabaseUrl}/functions/v1/widget-loader?id=${widgetId}`
+    : null;
   
   const scriptCode = `<!-- SiteWise Chat Widget -->
-<script src="${widgetLoaderUrl}" async></script>`;
+<script src="${widgetLoaderUrl ?? "YOUR_WIDGET_LOADER_URL"}" async></script>`;
 
   const reactCode = `// Install the package (coming soon)
 // npm install @sitewise/react-widget
 
 // Or use the script tag approach in your index.html:
-// <script src="${widgetLoaderUrl}" async></script>
+ // <script src="${widgetLoaderUrl ?? "YOUR_WIDGET_LOADER_URL"}" async></script>
 
 // Alternative: Load via useEffect
 import { useEffect } from 'react';
@@ -70,7 +100,7 @@ import { useEffect } from 'react';
 function App() {
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = '${widgetLoaderUrl}';
+     script.src = '${widgetLoaderUrl ?? "YOUR_WIDGET_LOADER_URL"}';
     script.async = true;
     document.body.appendChild(script);
     
@@ -90,7 +120,7 @@ function App() {
 function add_sitewise_widget() {
   wp_enqueue_script(
     'sitewise-widget',
-    '${widgetLoaderUrl}',
+     '${widgetLoaderUrl ?? "YOUR_WIDGET_LOADER_URL"}',
     array(),
     null,
     true
@@ -166,11 +196,11 @@ add_action('wp_enqueue_scripts', 'add_sitewise_widget');
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Your Widget ID</p>
-                <p className="font-mono text-lg font-medium">{widgetId}</p>
+                <p className="font-mono text-lg font-medium">{widgetId ?? "(not created yet)"}</p>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                Active
+                <div className={`w-2 h-2 rounded-full ${widgetId ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+                {widgetId ? "Active" : "Missing"}
               </div>
             </div>
           </CardContent>
