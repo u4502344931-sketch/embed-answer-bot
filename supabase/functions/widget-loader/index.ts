@@ -42,13 +42,15 @@ serve(async (req) => {
   container.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:2147483647;pointer-events:none;';
   document.body.appendChild(container);
 
-  // Create iframe
+  // Create iframe - start larger so shadows/intro bubble aren't clipped
   var iframe = document.createElement('iframe');
   iframe.id = 'sitewise-widget-iframe';
   iframe.src = baseUrl + '/widget/' + widgetId;
-  iframe.style.cssText = 'border:none;width:80px;height:80px;background:transparent;pointer-events:auto;';
+  iframe.style.cssText = 'border:none;width:300px;height:180px;background:transparent !important;background-color:transparent !important;pointer-events:auto;';
   iframe.allow = 'microphone';
   iframe.setAttribute('allowtransparency', 'true');
+  iframe.setAttribute('frameborder', '0');
+  iframe.setAttribute('scrolling', 'no');
   container.appendChild(iframe);
 
   // Handle messages from widget

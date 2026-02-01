@@ -113,6 +113,16 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
+  /* Transparent background for embedded widget iframe */
+  body.widget-embed,
+  body.widget-embed * {
+    background-color: transparent !important;
+  }
+  
+  body.widget-embed .widget-content {
+    background-color: inherit;
+  }
+
   /* Elegant serif headlines */
   h1, h2, h3, .font-serif {
     font-family: 'Playfair Display', Georgia, serif;

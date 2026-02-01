@@ -19,12 +19,17 @@ const Widget = () => {
 
   useEffect(() => {
     // Make the entire document transparent for iframe embedding
-    document.documentElement.style.background = "transparent";
-    document.body.style.background = "transparent";
+    // Use !important to override Tailwind's bg-background on body
+    document.documentElement.style.setProperty("background", "transparent", "important");
+    document.body.style.setProperty("background", "transparent", "important");
+    document.body.style.setProperty("background-color", "transparent", "important");
+    document.body.classList.add("widget-embed");
     
     return () => {
       document.documentElement.style.background = "";
       document.body.style.background = "";
+      document.body.style.backgroundColor = "";
+      document.body.classList.remove("widget-embed");
     };
   }, []);
 
