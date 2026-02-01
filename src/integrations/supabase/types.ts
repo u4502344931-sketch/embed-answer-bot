@@ -170,6 +170,8 @@ export type Database = {
           header_title: string
           id: string
           position: string
+          primary_color: string
+          text_color: string
           updated_at: string
           user_id: string
           welcome_message: string
@@ -181,6 +183,8 @@ export type Database = {
           header_title?: string
           id?: string
           position?: string
+          primary_color?: string
+          text_color?: string
           updated_at?: string
           user_id: string
           welcome_message?: string
@@ -192,6 +196,8 @@ export type Database = {
           header_title?: string
           id?: string
           position?: string
+          primary_color?: string
+          text_color?: string
           updated_at?: string
           user_id?: string
           welcome_message?: string

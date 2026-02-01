@@ -9,6 +9,8 @@ interface WidgetSettings {
   ai_instructions: string;
   position: string;
   widget_template: string;
+  primary_color: string;
+  text_color: string;
 }
 
 const Widget = () => {
@@ -60,6 +62,8 @@ const Widget = () => {
             ai_instructions: data.ai_instructions,
             position: data.position,
             widget_template: data.widget_template,
+            primary_color: data.primary_color || "#2563eb",
+            text_color: data.text_color || "#ffffff",
           });
         }
       } catch (err) {

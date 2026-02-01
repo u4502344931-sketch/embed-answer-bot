@@ -16,6 +16,8 @@ interface WidgetSettings {
   ai_instructions: string;
   position: string;
   widget_template: string;
+  primary_color: string;
+  text_color: string;
 }
 
 interface EmbeddableWidgetProps {
@@ -34,6 +36,8 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
   const headerTitle = settings?.header_title || "Chat Assistant";
   const welcomeMessage = settings?.welcome_message || "Hi! How can I help you today?";
   const position = settings?.position || "bottom-right";
+  const primaryColor = settings?.primary_color || "#2563eb";
+  const textColor = settings?.text_color || "#ffffff";
 
   // Auto-scroll chat container
   useEffect(() => {
@@ -189,9 +193,10 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
               exit={{ scale: 0 }}
               whileHover={{ scale: 1.05 }}
               onClick={() => setIsOpen(true)}
-              className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer"
+              className="w-14 h-14 rounded-full flex items-center justify-center cursor-pointer"
+              style={{ backgroundColor: primaryColor }}
             >
-              <MessageCircle className="w-6 h-6 text-white" />
+              <MessageCircle className="w-6 h-6" style={{ color: textColor }} />
             </motion.button>
           </>
         )}
@@ -207,7 +212,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
             className="w-[360px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-blue-600 text-white">
+            <div className="flex items-center justify-between px-4 py-3" style={{ backgroundColor: primaryColor, color: textColor }}>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <Sparkles className="w-4 h-4" />
@@ -244,9 +249,10 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                   <div
                     className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm ${
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-sm"
+                        ? "rounded-br-sm"
                         : "bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-sm shadow-sm"
                     }`}
+                    style={msg.role === "user" ? { backgroundColor: primaryColor, color: textColor } : undefined}
                   >
                     {msg.role === "assistant" ? (
                       <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -293,7 +299,8 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                 />
                 <Button
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg bg-blue-600 hover:bg-blue-700"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg"
+                  style={{ backgroundColor: primaryColor, color: textColor }}
                   disabled={!promptValue.trim() || isLoading}
                   onClick={handleSendMessage}
                 >
