@@ -189,7 +189,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
               exit={{ scale: 0 }}
               whileHover={{ scale: 1.05 }}
               onClick={() => setIsOpen(true)}
-              className="w-14 h-14 bg-blue-600 rounded-full shadow-lg flex items-center justify-center cursor-pointer border-4 border-white"
+              className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer"
             >
               <MessageCircle className="w-6 h-6 text-white" />
             </motion.button>
@@ -204,7 +204,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="w-[360px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
+            className="w-[360px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-blue-600 text-white">
