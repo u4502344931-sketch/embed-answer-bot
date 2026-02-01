@@ -186,7 +186,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
               exit={{ scale: 0 }}
               whileHover={{ scale: 1.05 }}
               onClick={() => setIsOpen(true)}
-              className="w-14 h-14 bg-blue-600 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
+              className="w-14 h-14 bg-blue-600 rounded-full shadow-lg flex items-center justify-center cursor-pointer border-4 border-white"
             >
               <MessageCircle className="w-6 h-6 text-white" />
             </motion.button>

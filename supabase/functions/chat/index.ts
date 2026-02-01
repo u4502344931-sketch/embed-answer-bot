@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,11 +12,54 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, widgetId, systemPrompt } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    // Build the system message
+    let systemContent = systemPrompt || "You are a helpful customer support assistant. Keep your answers concise, helpful, and professional.";
+    
+    // If widgetId is provided, try to fetch content sources for context
+    if (widgetId) {
+      try {
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        // Fetch widget settings to get the user_id
+        const { data: widgetData } = await supabase
+          .from("widget_settings")
+          .select("user_id")
+          .eq("id", widgetId)
+          .maybeSingle();
+        
+        if (widgetData?.user_id) {
+          // Fetch content sources for this user
+          const { data: contentSources } = await supabase
+            .from("content_sources")
+            .select("content, name")
+            .eq("user_id", widgetData.user_id)
+            .eq("status", "completed")
+            .limit(5);
+          
+          if (contentSources && contentSources.length > 0) {
+            const contextContent = contentSources
+              .filter(source => source.content)
+              .map(source => `### ${source.name}\n${source.content}`)
+              .join("\n\n");
+            
+            if (contextContent) {
+              systemContent += `\n\nUse the following knowledge base to answer questions. Only answer based on this information. If the answer is not in the knowledge base, politely say you don't have that information:\n\n${contextContent}`;
+            }
+          }
+        }
+      } catch (dbError) {
+        console.error("Error fetching content:", dbError);
+        // Continue without content context
+      }
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -29,7 +73,7 @@ serve(async (req) => {
         messages: [
           { 
             role: "system", 
-            content: "You are SiteWise AI, a helpful and friendly customer support assistant for websites. Keep your answers concise, helpful, and professional. Answer questions about pricing, features, getting started, and general support. If you don't know something, admit it politely."
+            content: systemContent
           },
           ...messages,
         ],
