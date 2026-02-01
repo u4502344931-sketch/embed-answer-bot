@@ -42,12 +42,11 @@ const Widget = () => {
       }
 
       try {
-        // Fetch widget settings based on user_id that starts with widgetId
+        // Fetch widget settings by the widget's own ID
         const { data, error: fetchError } = await supabase
           .from("widget_settings")
           .select("*")
-          .ilike("user_id", `${widgetId}%`)
-          .limit(1)
+          .eq("id", widgetId)
           .maybeSingle();
 
         if (fetchError) {
