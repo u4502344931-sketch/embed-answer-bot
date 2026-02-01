@@ -108,13 +108,15 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
 
           for (const line of lines) {
             if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") continue;
+              const data = line.slice(6).trim();
+              if (data === "[DONE]" || data.startsWith(": ")) continue;
 
               try {
                 const parsed = JSON.parse(data);
-                if (parsed.content) {
-                  assistantContent += parsed.content;
+                // Handle OpenAI-style streaming format
+                const content = parsed.choices?.[0]?.delta?.content || parsed.content;
+                if (content) {
+                  assistantContent += content;
                   setChatMessages((prev) => {
                     const last = prev[prev.length - 1];
                     if (last?.role === "assistant") {
