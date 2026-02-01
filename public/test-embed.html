@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widget Embed Test Page</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+    }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .api-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .open-btn { background: #2563eb; color: white; }
+    .close-btn { background: #dc2626; color: white; }
+    .toggle-btn { background: #7c3aed; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Widget Embed Test Page</h1>
+    
+    <div class="card">
+      <h2>About This Test</h2>
+      <p>
+        This page simulates an external website embedding the SiteWise chat widget.
+        The widget should appear in the bottom-right corner of the page.
+      </p>
+      <p>
+        Look for the chat bubble icon - click it to open the chat interface!
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Widget API Controls</h2>
+      <p>Use these buttons to test the programmatic API:</p>
+      <div class="api-buttons">
+        <button class="open-btn" onclick="SiteWise.open()">Open Widget</button>
+        <button class="close-btn" onclick="SiteWise.close()">Close Widget</button>
+        <button class="toggle-btn" onclick="SiteWise.toggle()">Toggle Widget</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Sample Content</h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+        fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+        culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+    </div>
+  </div>
+
+  <!-- SiteWise Widget Embed Script -->
+  <script src="https://qxrohvlnbezooptlxwbv.supabase.co/functions/v1/widget-loader?id=ceda4972-c0e5-48bb-b696-612a97849ccc"></script>
+</body>
+</html>
