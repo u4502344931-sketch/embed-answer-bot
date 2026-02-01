@@ -24,26 +24,31 @@ serve(async (req) => {
     
     // If widgetId is provided, try to fetch content sources for context
     if (widgetId) {
+      console.log("Fetching content for widgetId:", widgetId);
       try {
         const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
         const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
         const supabase = createClient(supabaseUrl, supabaseKey);
         
         // Fetch widget settings to get the user_id
-        const { data: widgetData } = await supabase
+        const { data: widgetData, error: widgetError } = await supabase
           .from("widget_settings")
           .select("user_id")
           .eq("id", widgetId)
           .maybeSingle();
         
+        console.log("Widget data:", widgetData, "Error:", widgetError);
+        
         if (widgetData?.user_id) {
           // Fetch content sources for this user
-          const { data: contentSources } = await supabase
+          const { data: contentSources, error: contentError } = await supabase
             .from("content_sources")
             .select("content, name")
             .eq("user_id", widgetData.user_id)
             .eq("status", "completed")
             .limit(5);
+          
+          console.log("Content sources found:", contentSources?.length, "Error:", contentError);
           
           if (contentSources && contentSources.length > 0) {
             const contextContent = contentSources
@@ -52,7 +57,8 @@ serve(async (req) => {
               .join("\n\n");
             
             if (contextContent) {
-              systemContent += `\n\nUse the following knowledge base to answer questions. Only answer based on this information. If the answer is not in the knowledge base, politely say you don't have that information:\n\n${contextContent}`;
+              console.log("Adding context content, length:", contextContent.length);
+              systemContent += `\n\nUse the following knowledge base to answer questions. You are a support assistant for this specific website. Only answer based on this information. If the answer is not in the knowledge base, politely say you don't have that information:\n\n${contextContent}`;
             }
           }
         }
@@ -60,6 +66,8 @@ serve(async (req) => {
         console.error("Error fetching content:", dbError);
         // Continue without content context
       }
+    } else {
+      console.log("No widgetId provided");
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
