@@ -18,6 +18,17 @@ const Widget = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Make the entire document transparent for iframe embedding
+    document.documentElement.style.background = "transparent";
+    document.body.style.background = "transparent";
+    
+    return () => {
+      document.documentElement.style.background = "";
+      document.body.style.background = "";
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchSettings = async () => {
       if (!widgetId) {
         setError("Widget ID is required");
@@ -59,26 +70,14 @@ const Widget = () => {
   }, [widgetId]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return null; // Don't show loading spinner for embedded widget
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
+    return null; // Don't show errors for embedded widget
   }
 
-  return (
-    <div className="min-h-screen bg-transparent">
-      <EmbeddableWidget widgetId={widgetId || ""} settings={settings} />
-    </div>
-  );
+  return <EmbeddableWidget widgetId={widgetId || ""} settings={settings} />;
 };
 
 export default Widget;
