@@ -39,15 +39,16 @@ serve(async (req) => {
   // Create widget container
   var container = document.createElement('div');
   container.id = 'sitewise-widget-container';
-  container.style.cssText = 'position:fixed;bottom:0;right:0;z-index:2147483647;';
+  container.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:2147483647;pointer-events:none;';
   document.body.appendChild(container);
 
   // Create iframe
   var iframe = document.createElement('iframe');
   iframe.id = 'sitewise-widget-iframe';
   iframe.src = baseUrl + '/widget/' + widgetId;
-  iframe.style.cssText = 'border:none;width:400px;height:600px;max-width:100vw;max-height:100vh;';
+  iframe.style.cssText = 'border:none;width:80px;height:80px;background:transparent;pointer-events:auto;';
   iframe.allow = 'microphone';
+  iframe.setAttribute('allowtransparency', 'true');
   container.appendChild(iframe);
 
   // Handle messages from widget
@@ -58,9 +59,6 @@ serve(async (req) => {
     if (data.type === 'sitewise-resize') {
       iframe.style.width = data.width + 'px';
       iframe.style.height = data.height + 'px';
-    }
-    if (data.type === 'sitewise-toggle') {
-      iframe.style.display = data.visible ? 'block' : 'none';
     }
   });
 
