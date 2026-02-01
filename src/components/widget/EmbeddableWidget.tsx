@@ -56,8 +56,9 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
 
   // Notify parent of size changes
   useEffect(() => {
-    const width = isOpen ? 380 : 80;
-    const height = isOpen ? 540 : 80;
+    // When closed, keep iframe larger so button shadow + intro bubble aren't clipped
+    const width = isOpen ? 380 : 300;
+    const height = isOpen ? 540 : 180;
     
     window.parent.postMessage(
       { type: "sitewise-resize", width, height },
