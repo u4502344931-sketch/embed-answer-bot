@@ -123,15 +123,17 @@ Always be helpful, answer questions about SiteWise features, and gently guide in
                   ease: "easeInOut"
                 }
               }}
-              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 pr-8 min-w-[180px] mb-2"
+              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 pr-10 min-w-[180px] mb-2"
             >
               {/* Close button */}
               <button
+                type="button"
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   setShowBubbleMessage(false);
                 }}
-                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-muted transition-colors z-10 cursor-pointer"
               >
                 <X className="w-3 h-3 text-muted-foreground" />
               </button>
