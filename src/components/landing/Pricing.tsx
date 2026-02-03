@@ -105,7 +105,7 @@ const Pricing = () => {
                 <div className="mb-8 pb-8 border-b border-current/10">
                   {plan.price !== null ? (
                     <div className="flex items-baseline">
-                      <span className="font-serif text-4xl font-medium">${plan.price}</span>
+                      <span className="font-serif text-4xl font-medium">€{plan.price}</span>
                       <span className={`ml-2 text-sm ${plan.popular ? "text-card/60" : "text-muted-foreground"}`}>/month</span>
                     </div>
                   ) : (
