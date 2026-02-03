@@ -4,6 +4,7 @@ import { Send, MessageCircle, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
+import { streamChat } from "@/lib/chat-stream";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -79,66 +80,29 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({
-            messages: [...chatMessages, userMessage],
-            widgetId,
-            systemPrompt: settings?.ai_instructions,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
       let assistantContent = "";
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n");
-
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6).trim();
-              if (data === "[DONE]" || data.startsWith(": ")) continue;
-
-              try {
-                const parsed = JSON.parse(data);
-                // Handle OpenAI-style streaming format
-                const content = parsed.choices?.[0]?.delta?.content || parsed.content;
-                if (content) {
-                  assistantContent += content;
-                  setChatMessages((prev) => {
-                    const last = prev[prev.length - 1];
-                    if (last?.role === "assistant") {
-                      return prev.map((m, i) =>
-                        i === prev.length - 1 ? { ...m, content: assistantContent } : m
-                      );
-                    }
-                    return [...prev, { role: "assistant", content: assistantContent }];
-                  });
-                }
-              } catch {
-                // Skip non-JSON lines
-              }
-            }
+      const upsertAssistant = (nextChunk: string) => {
+        assistantContent += nextChunk;
+        setChatMessages((prev) => {
+          const last = prev[prev.length - 1];
+          if (last?.role === "assistant") {
+            return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantContent } : m));
           }
-        }
-      }
+          return [...prev, { role: "assistant", content: assistantContent }];
+        });
+      };
+
+      await streamChat({
+        messages: [...chatMessages, userMessage],
+        widgetId,
+        systemPrompt: settings?.ai_instructions,
+        onDelta: (chunk) => upsertAssistant(chunk),
+        onDone: () => setIsLoading(false),
+        onError: (err) => {
+          throw new Error(err);
+        },
+      });
     } catch (error) {
       console.error("Chat error:", error);
       setChatMessages((prev) => [
