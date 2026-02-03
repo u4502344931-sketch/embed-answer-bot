@@ -34,6 +34,17 @@ const FloatingChatWidget = () => {
     }
   }, [chatMessages]);
 
+  // Auto-dismiss the bubble after 10 seconds
+  useEffect(() => {
+    if (!showBubbleMessage) return;
+    
+    const timer = setTimeout(() => {
+      setShowBubbleMessage(false);
+    }, 10000);
+    
+    return () => clearTimeout(timer);
+  }, [showBubbleMessage]);
+
   const handleSendMessage = async () => {
     if (!promptValue.trim() || isLoading) return;
 
