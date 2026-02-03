@@ -167,7 +167,10 @@ Always be helpful, answer questions about SiteWise features, and gently guide in
         <motion.button
           animate={{ y: [0, -6, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          onClick={() => setIsChatOpen(true)}
+          onClick={() => {
+            setIsChatOpen(true);
+            setShowBubbleMessage(false);
+          }}
           className="w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
           aria-label="Open chat"
         >
