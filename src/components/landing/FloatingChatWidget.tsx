@@ -123,17 +123,24 @@ Always be helpful, answer questions about SiteWise features, and gently guide in
                   ease: "easeInOut"
                 }
               }}
-              className="absolute bottom-16 right-0 bg-card border border-border rounded-xl shadow-premium p-3 pr-10 min-w-[180px] mb-2"
+              className="absolute bottom-16 right-0 z-50 pointer-events-auto bg-card border border-border rounded-xl shadow-premium p-3 pr-12 min-w-[180px] mb-2"
             >
               {/* Close button */}
               <button
                 type="button"
-                onClick={(e) => {
+                onPointerDown={(e) => {
+                  // Close on first tap/click (pointerdown is more reliable than click on animated elements)
                   e.preventDefault();
                   e.stopPropagation();
                   setShowBubbleMessage(false);
                 }}
-                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-muted transition-colors z-10 cursor-pointer"
+                onClick={(e) => {
+                  // Fallback for browsers that don't fire pointer events
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowBubbleMessage(false);
+                }}
+                className="absolute top-2 right-2 z-20 grid h-8 w-8 place-items-center rounded-full bg-background/60 hover:bg-muted transition-colors cursor-pointer"
               >
                 <X className="w-3 h-3 text-muted-foreground" />
               </button>
