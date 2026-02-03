@@ -157,7 +157,7 @@ Always be helpful, answer questions about SiteWise features, and gently guide in
 
       {/* ChatGPT-style prompt dialog */}
       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <DialogContent className="sm:max-w-2xl p-0 gap-0 bg-transparent border-0 shadow-none fixed bottom-4 top-auto translate-y-0 data-[state=open]:slide-in-from-bottom-4">
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 bg-transparent border-0 shadow-none fixed bottom-4 top-auto translate-y-0 data-[state=open]:slide-in-from-bottom-4 [&>button]:hidden">
           <VisuallyHidden.Root>
             <DialogTitle>Chat with SiteWise Assistant</DialogTitle>
           </VisuallyHidden.Root>
