@@ -97,13 +97,21 @@ const ChatWidgetDemo = () => {
 
   // Handle input focus - trigger Thanos snap effect
   const handleInputFocus = () => {
-    if (!isInteractive && demoMessages.length > 0) {
-      setIsDissolving(true);
-      setTimeout(() => {
-        setIsInteractive(true);
-        setDemoMessages([]);
-        setIsDissolving(false);
-      }, 600);
+    if (!isInteractive) {
+      // Immediately stop the demo animation
+      setIsInteractive(true);
+      
+      // If there are demo messages, dissolve them
+      if (demoMessages.length > 0) {
+        setIsDissolving(true);
+        setTimeout(() => {
+          setDemoMessages([]);
+          setIsDissolving(false);
+        }, 500);
+      }
+      
+      // Stop any typing indicator
+      setIsTyping(false);
     }
   };
 
