@@ -134,7 +134,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.9 }}
                 transition={{ delay: 1.5, duration: 0.3 }}
-                className="absolute bottom-16 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-3 pr-8 min-w-[180px] mb-2"
+                className="absolute bottom-[70px] right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-3 pr-8 min-w-[180px]"
               >
                 <button
                   onClick={(e) => {
@@ -146,7 +146,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                   <X className="w-3 h-3 text-gray-500" />
                 </button>
                 <p className="text-sm text-gray-900 dark:text-white font-medium">👋 {welcomeMessage}</p>
-                <div className="absolute -bottom-2 right-5 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45" />
+                <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45" />
               </motion.div>
             )}
 
