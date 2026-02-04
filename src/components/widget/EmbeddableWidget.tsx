@@ -115,6 +115,10 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
     }
   };
 
+  // Flip bubble position based on widget corner
+  const isRight = position === "bottom-right" || position === "top-right";
+  const isBottom = position === "bottom-right" || position === "bottom-left";
+
   const positionClasses = {
     "bottom-right": "bottom-0 right-0",
     "bottom-left": "bottom-0 left-0",
@@ -135,19 +139,25 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.9 }}
                 transition={{ delay: 1.5, duration: 0.3 }}
-                className="absolute bottom-[70px] right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-3 pr-8 min-w-[180px]"
+                className={`absolute ${isBottom ? "bottom-[70px]" : "top-[70px]"} ${isRight ? "right-0" : "left-0"} bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-3 ${isRight ? "pr-10" : "pl-10"} min-w-[180px]`}
               >
                 <button
-                  onClick={(e) => {
+                  onPointerDown={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
                     setShowBubbleMessage(false);
                   }}
-                  className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowBubbleMessage(false);
+                  }}
+                  className={`absolute top-2 ${isRight ? "right-2" : "left-2"} z-10 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer`}
                 >
                   <X className="w-3 h-3 text-gray-500" />
                 </button>
                 <p className="text-sm text-gray-900 dark:text-white font-medium">👋 {welcomeMessage}</p>
-                <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45" />
+                <div className={`absolute ${isBottom ? "-bottom-2" : "-top-2"} ${isRight ? "right-6" : "left-6"} w-4 h-4 bg-white dark:bg-gray-800 ${isBottom ? "border-b border-r" : "border-t border-l"} border-gray-200 dark:border-gray-700 rotate-45`} />
               </motion.div>
             )}
 
@@ -272,6 +282,21 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
+            </div>
+
+            {/* Powered by label */}
+            <div className="px-4 pb-3 pt-0 bg-white dark:bg-gray-900">
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">
+                Powered by{" "}
+                <a
+                  href="https://sitewise.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-600 dark:hover:text-gray-400 underline"
+                >
+                  Sitewise.ai
+                </a>
+              </p>
             </div>
           </motion.div>
         )}
