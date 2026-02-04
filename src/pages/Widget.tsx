@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import EmbeddableWidget from "@/components/widget/EmbeddableWidget";
 
 interface WidgetSettings {
@@ -44,17 +43,23 @@ const Widget = () => {
       }
 
       try {
-        // Fetch widget settings by the widget's own ID
-        const { data, error: fetchError } = await supabase
-          .from("widget_settings")
-          .select("*")
-          .eq("id", widgetId)
-          .maybeSingle();
+        // Public embedding must work without authentication, so we load settings via a backend function.
+        const resp = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/widget-settings-public?id=${widgetId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+          }
+        );
 
-        if (fetchError) {
-          console.error("Error fetching settings:", fetchError);
+        const json = (await resp.json().catch(() => ({}))) as any;
+        if (!resp.ok) {
+          console.error("Error fetching public widget settings:", json);
+          throw new Error(json?.error || "Failed to load widget settings");
         }
 
+        const data = json?.settings;
         if (data) {
           setSettings({
             header_title: data.header_title,
