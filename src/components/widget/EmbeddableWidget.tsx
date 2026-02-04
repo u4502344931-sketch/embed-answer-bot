@@ -63,13 +63,14 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
   useEffect(() => {
     // When closed, keep iframe larger so button shadow + intro bubble aren't clipped
     const width = isOpen ? 380 : 300;
-    const height = isOpen ? 540 : 180;
+    // When closed, increase height while the intro bubble is visible to prevent clipping/glitching.
+    const height = isOpen ? 540 : showBubbleMessage ? 230 : 160;
     
     window.parent.postMessage(
       { type: "sitewise-resize", width, height },
       "*"
     );
-  }, [isOpen]);
+  }, [isOpen, showBubbleMessage]);
 
   const handleSendMessage = async () => {
     if (!promptValue.trim() || isLoading) return;
