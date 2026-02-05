@@ -19,8 +19,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Build the system message
-    let systemContent = systemPrompt || "You are a helpful customer support assistant. Keep your answers concise, helpful, and professional.";
+    // Build the system message - default to generic helpful assistant
+    let systemContent = "You are a helpful assistant. Keep your answers concise, helpful, and professional.";
+    let hasKnowledgeBase = false;
     
     // If widgetId is provided, try to fetch content sources for context
     if (widgetId) {
@@ -57,8 +58,16 @@ serve(async (req) => {
               .join("\n\n");
             
             if (contextContent) {
+              hasKnowledgeBase = true;
               console.log("Adding context content, length:", contextContent.length);
-              systemContent += `\n\nUse the following knowledge base to answer questions. You are a support assistant for this specific website. Only answer based on this information. If the answer is not in the knowledge base, politely say you don't have that information:\n\n${contextContent}`;
+              // When we have scraped content, use ONLY that content - ignore user AI instructions
+              // This prevents the SiteWise marketing from mixing with website content
+              systemContent = `You are a helpful support assistant for this website. You MUST answer questions ONLY based on the knowledge base provided below. Do NOT mention any pricing plans, products, or services that are not in the knowledge base. Do NOT try to sell anything. Simply help users find information from this website.
+
+If the user asks about something not covered in the knowledge base, politely say you don't have that specific information and offer to help with something else from the website.
+
+KNOWLEDGE BASE:
+${contextContent}`;
             }
           }
         }
@@ -68,6 +77,12 @@ serve(async (req) => {
       }
     } else {
       console.log("No widgetId provided");
+    }
+    
+    // Only use custom AI instructions if there's NO knowledge base content
+    // This prevents mixing SiteWise marketing with actual website content
+    if (!hasKnowledgeBase && systemPrompt) {
+      systemContent = systemPrompt;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
