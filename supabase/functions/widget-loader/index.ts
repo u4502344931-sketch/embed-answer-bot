@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,7 +7,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -23,26 +21,21 @@ serve(async (req) => {
     });
   }
 
-  // Get the base URL for the widget page
   const baseUrl = Deno.env.get("WIDGET_BASE_URL") || "https://embed-answer-bot.lovable.app";
 
-  // Generate the loader script
   const loaderScript = `
 (function() {
-  // Prevent multiple initializations
   if (window.__sitewiseLoaded) return;
   window.__sitewiseLoaded = true;
 
   var widgetId = "${widgetId}";
   var baseUrl = "${baseUrl}";
 
-  // Create widget container
   var container = document.createElement('div');
   container.id = 'sitewise-widget-container';
   container.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:2147483647;pointer-events:none;';
   document.body.appendChild(container);
 
-  // Create iframe - start larger so shadows/intro bubble aren't clipped
   var iframe = document.createElement('iframe');
   iframe.id = 'sitewise-widget-iframe';
   iframe.src = baseUrl + '/widget/' + widgetId;
@@ -53,7 +46,6 @@ serve(async (req) => {
   iframe.setAttribute('scrolling', 'no');
   container.appendChild(iframe);
 
-  // Handle messages from widget
   window.addEventListener('message', function(event) {
     if (event.origin !== baseUrl) return;
     
@@ -64,7 +56,6 @@ serve(async (req) => {
     }
   });
 
-  // Expose API
   window.SiteWise = {
     open: function() {
       iframe.contentWindow.postMessage({ type: 'sitewise-open' }, baseUrl);
