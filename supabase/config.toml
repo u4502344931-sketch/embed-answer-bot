@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.widget-settings-public]
 verify_jwt = false
+
+[functions.widget-loader]
+verify_jwt = false
+
+[functions.firecrawl-map]
+verify_jwt = false
+
+[functions.firecrawl-scrape]
+verify_jwt = false

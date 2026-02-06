@@ -56,7 +56,6 @@ serve(async (req) => {
       headers: {
         ...corsHeaders,
         "Content-Type": "application/json",
-        // Avoid stale settings on embed websites
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
         Expires: "0",
