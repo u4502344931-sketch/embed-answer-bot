@@ -15,7 +15,8 @@ import {
   Sparkles,
   Brain,
   Info,
-  Palette
+  Palette,
+  X
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -468,89 +469,110 @@ const WidgetSettings = () => {
                     </div>
                   </div>
 
-                  {/* Widget Preview */}
-                  {widgetTemplate === "bubble" ? (
-                    <div 
-                      className={`absolute bottom-6 ${position === "bottom-right" ? "right-6" : "left-6"}`}
+                  {/* Widget Preview - Closed State */}
+                  <div className={`absolute bottom-6 ${position === "bottom-right" ? "right-6" : "left-6"}`}>
+                    {/* Intro bubble */}
+                    <div className={`bg-card border border-border rounded-xl shadow-lg p-3 ${position === "bottom-right" ? "pr-10" : "pl-10"} min-w-[160px] mb-3 relative`}>
+                      <div className={`absolute top-2 ${position === "bottom-right" ? "right-2" : "left-2"} w-5 h-5 flex items-center justify-center rounded-full bg-muted`}>
+                        <X className="w-2.5 h-2.5 text-muted-foreground" />
+                      </div>
+                      <p className="text-xs text-foreground font-medium">
+                        {widgetTemplate === "bubble" ? "👋" : "✨"} {welcomeMessage}
+                      </p>
+                      <div className={`absolute -bottom-2 ${position === "bottom-right" ? "right-5" : "left-5"} w-3 h-3 bg-card border-b border-r border-border rotate-45`} />
+                    </div>
+
+                    {/* Floating button - different shape per template */}
+                    <div
+                      className={`flex items-center justify-center shadow-lg cursor-pointer ${
+                        position === "bottom-right" ? "ml-auto" : "mr-auto"
+                      } ${
+                        widgetTemplate === "bubble"
+                          ? "w-12 h-12 rounded-full"
+                          : widgetTemplate === "chatgpt"
+                          ? "w-12 h-12 rounded-xl"
+                          : "w-12 h-12 rounded-lg"
+                      }`}
+                      style={{ backgroundColor: primaryColor }}
                     >
-                      {/* Chat window (expanded state preview) */}
-                      <div className="bg-card border border-border rounded-xl shadow-lg w-72 mb-4 overflow-hidden">
-                        <div className="p-3" style={{ backgroundColor: primaryColor, color: textColor }}>
-                          <p className="font-medium text-sm">{headerTitle}</p>
-                        </div>
-                        <div className="p-3 h-32 flex items-start">
-                          <div className="bg-muted rounded-lg p-2 text-xs max-w-[80%]">
-                            {welcomeMessage}
+                      {widgetTemplate === "bubble" ? (
+                        <MessageCircle className="w-5 h-5" style={{ color: textColor }} />
+                      ) : widgetTemplate === "chatgpt" ? (
+                        <Sparkles className="w-5 h-5" style={{ color: textColor }} />
+                      ) : (
+                        <MessageSquare className="w-5 h-5" style={{ color: textColor }} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Open State Preview */}
+                <div className="mt-4">
+                  <p className="text-xs text-muted-foreground mb-2 font-medium">Expanded view</p>
+                  <div className="relative bg-muted/50 rounded-lg border border-dashed border-border overflow-hidden">
+                    {widgetTemplate === "bubble" ? (
+                      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between px-3 py-2" style={{ backgroundColor: primaryColor, color: textColor }}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                              <Sparkles className="w-3 h-3" />
+                            </div>
+                            <span className="font-medium text-xs">{headerTitle}</span>
                           </div>
+                          <X className="w-3 h-3" />
+                        </div>
+                        <div className="p-3 h-24 bg-muted/20 flex items-start">
+                          <div className="bg-muted rounded-lg p-2 text-xs max-w-[80%]">{welcomeMessage}</div>
                         </div>
                         <div className="border-t border-border p-2">
-                          <div className="bg-muted rounded-lg h-8 px-3 flex items-center text-xs text-muted-foreground">
-                            Type your message...
-                          </div>
+                          <div className="bg-muted rounded-lg h-8 px-3 flex items-center text-xs text-muted-foreground">Type a message...</div>
                         </div>
                       </div>
-                      {/* Bubble */}
-                      <div 
-                        className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg cursor-pointer ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}
-                        style={{ backgroundColor: primaryColor }}
-                      >
-                        <MessageCircle className="w-6 h-6" style={{ color: textColor }} />
-                      </div>
-                    </div>
-                  ) : widgetTemplate === "panel" ? (
-                    <div 
-                      className={`absolute bottom-6 top-12 ${position === "bottom-right" ? "right-6" : "left-6"} w-72`}
-                    >
-                      <div className="bg-card border border-border rounded-xl shadow-lg h-full flex flex-col overflow-hidden">
-                        <div className="p-4" style={{ backgroundColor: primaryColor, color: textColor }}>
-                          <p className="font-medium">{headerTitle}</p>
-                        </div>
-                        <div className="flex-1 p-4">
-                          <div className="bg-muted rounded-lg p-3 text-sm max-w-[85%]">
-                            {welcomeMessage}
+                    ) : widgetTemplate === "panel" ? (
+                      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between px-3 py-3" style={{ backgroundColor: primaryColor, color: textColor }}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5" />
+                            </div>
+                            <div>
+                              <span className="font-semibold text-xs">{headerTitle}</span>
+                              <p className="text-[10px] opacity-80">We typically reply instantly</p>
+                            </div>
                           </div>
+                          <X className="w-3 h-3" />
                         </div>
-                        <div className="border-t border-border p-3">
-                          <div className="bg-muted rounded-lg h-10 px-3 flex items-center text-sm text-muted-foreground">
-                            Type your message...
-                          </div>
+                        <div className="p-3 h-28 bg-muted/20 flex items-start">
+                          <div className="bg-muted rounded-lg p-2 text-xs max-w-[85%]">{welcomeMessage}</div>
+                        </div>
+                        <div className="border-t border-border p-2">
+                          <div className="bg-muted rounded-lg h-8 px-3 flex items-center text-xs text-muted-foreground">Type a message...</div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    /* ChatGPT Style Preview */
-                    <div 
-                      className={`absolute bottom-6 ${position === "bottom-right" ? "right-6" : "left-6"} left-6 right-6`}
-                    >
-                      {/* ChatGPT style prompt bar */}
-                      <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden">
-                        <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/30">
-                          <div 
-                            className="w-6 h-6 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: primaryColor }}
-                          >
-                            <Sparkles className="w-3 h-3" style={{ color: textColor }} />
+                    ) : (
+                      <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+                        <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-muted/30">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}>
+                              <Sparkles className="w-3 h-3" style={{ color: textColor }} />
+                            </div>
+                            <span className="text-xs font-medium">{headerTitle}</span>
                           </div>
-                          <span className="text-xs font-medium">{headerTitle}</span>
+                          <X className="w-3 h-3 text-muted-foreground" />
                         </div>
-                        <div className="p-3">
-                          <div className="bg-muted/50 rounded-xl h-10 px-4 flex items-center text-sm text-muted-foreground">
-                            Ask me anything...
+                        <div className="p-3 h-24 flex flex-col items-center justify-center text-center space-y-2">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${primaryColor}20` }}>
+                            <Sparkles className="w-5 h-5" style={{ color: primaryColor }} />
                           </div>
-                          <div className="flex items-center justify-center gap-3 mt-2">
-                            <span className="text-[9px] text-muted-foreground">Try: "What are your pricing plans?"</span>
-                          </div>
+                          <p className="text-xs text-foreground font-medium">{welcomeMessage}</p>
+                          <p className="text-[10px] text-muted-foreground">Ask me anything to get started</p>
+                        </div>
+                        <div className="p-3 border-t border-border bg-muted/30">
+                          <div className="bg-card border border-border rounded-xl h-8 px-3 flex items-center text-xs text-muted-foreground">Message...</div>
                         </div>
                       </div>
-                      {/* Floating button */}
-                      <div 
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg cursor-pointer mt-3 ${position === "bottom-right" ? "ml-auto" : "mr-auto"}`}
-                        style={{ backgroundColor: primaryColor }}
-                      >
-                        <Sparkles className="w-5 h-5" style={{ color: textColor }} />
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
