@@ -471,38 +471,67 @@ const WidgetSettings = () => {
 
                   {/* Widget Preview - Closed State */}
                   <div className={`absolute bottom-6 ${position === "bottom-right" ? "right-6" : "left-6"}`}>
-                    {/* Intro bubble */}
-                    <div className={`bg-card border border-border rounded-xl shadow-lg p-3 ${position === "bottom-right" ? "pr-10" : "pl-10"} min-w-[160px] mb-3 relative`}>
-                      <div className={`absolute top-2 ${position === "bottom-right" ? "right-2" : "left-2"} w-5 h-5 flex items-center justify-center rounded-full bg-muted`}>
-                        <X className="w-2.5 h-2.5 text-muted-foreground" />
-                      </div>
-                      <p className="text-xs text-foreground font-medium">
-                        {widgetTemplate === "bubble" ? "👋" : "✨"} {welcomeMessage}
-                      </p>
-                      <div className={`absolute -bottom-2 ${position === "bottom-right" ? "right-5" : "left-5"} w-3 h-3 bg-card border-b border-r border-border rotate-45`} />
-                    </div>
-
-                    {/* Floating button - different shape per template */}
-                    <div
-                      className={`flex items-center justify-center shadow-lg cursor-pointer ${
-                        position === "bottom-right" ? "ml-auto" : "mr-auto"
-                      } ${
-                        widgetTemplate === "bubble"
-                          ? "w-12 h-12 rounded-full"
-                          : widgetTemplate === "chatgpt"
-                          ? "w-12 h-12 rounded-xl"
-                          : "w-12 h-12 rounded-lg"
-                      }`}
-                      style={{ backgroundColor: primaryColor }}
-                    >
-                      {widgetTemplate === "bubble" ? (
-                        <MessageCircle className="w-5 h-5" style={{ color: textColor }} />
-                      ) : widgetTemplate === "chatgpt" ? (
-                        <Sparkles className="w-5 h-5" style={{ color: textColor }} />
-                      ) : (
-                        <MessageSquare className="w-5 h-5" style={{ color: textColor }} />
-                      )}
-                    </div>
+                    {widgetTemplate === "chatgpt" ? (
+                      <>
+                        {/* ChatGPT-style prompt bar */}
+                        <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden w-[220px] mb-3">
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-border bg-muted/30">
+                            <div
+                              className="w-5 h-5 rounded-md flex items-center justify-center"
+                              style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}
+                            >
+                              <Sparkles className="w-2.5 h-2.5" style={{ color: textColor }} />
+                            </div>
+                            <span className="text-[10px] font-medium">{headerTitle}</span>
+                          </div>
+                          <div className="p-2">
+                            <div className="bg-muted/50 rounded-lg h-7 px-2 flex items-center text-[10px] text-muted-foreground">
+                              Ask me anything...
+                            </div>
+                            <p className="text-[8px] text-muted-foreground text-center mt-1.5">
+                              Try: &quot;What are your pricing plans?&quot;
+                            </p>
+                          </div>
+                        </div>
+                        {/* Floating button */}
+                        <div
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg cursor-pointer ${
+                            position === "bottom-right" ? "ml-auto" : "mr-auto"
+                          }`}
+                          style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}
+                        >
+                          <Sparkles className="w-4 h-4" style={{ color: textColor }} />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Bubble/Panel intro bubble */}
+                        <div className={`bg-card border border-border rounded-xl shadow-lg p-3 ${position === "bottom-right" ? "pr-10" : "pl-10"} min-w-[160px] mb-3 relative`}>
+                          <div className={`absolute top-2 ${position === "bottom-right" ? "right-2" : "left-2"} w-5 h-5 flex items-center justify-center rounded-full bg-muted`}>
+                            <X className="w-2.5 h-2.5 text-muted-foreground" />
+                          </div>
+                          <p className="text-xs text-foreground font-medium">
+                            {widgetTemplate === "bubble" ? "👋" : "👋"} {welcomeMessage}
+                          </p>
+                          <div className={`absolute -bottom-2 ${position === "bottom-right" ? "right-5" : "left-5"} w-3 h-3 bg-card border-b border-r border-border rotate-45`} />
+                        </div>
+                        {/* Floating button */}
+                        <div
+                          className={`flex items-center justify-center shadow-lg cursor-pointer ${
+                            position === "bottom-right" ? "ml-auto" : "mr-auto"
+                          } ${
+                            widgetTemplate === "bubble" ? "w-12 h-12 rounded-full" : "w-12 h-12 rounded-lg"
+                          }`}
+                          style={{ backgroundColor: primaryColor }}
+                        >
+                          {widgetTemplate === "bubble" ? (
+                            <MessageCircle className="w-5 h-5" style={{ color: textColor }} />
+                          ) : (
+                            <MessageSquare className="w-5 h-5" style={{ color: textColor }} />
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 

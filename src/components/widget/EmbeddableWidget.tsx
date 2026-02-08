@@ -46,15 +46,22 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
 
   // Notify parent of size changes
   useEffect(() => {
-    // Different templates have different sizes
     let width = 380;
     let height = 540;
 
     if (!isOpen) {
-      width = 300;
-      height = showBubbleMessage ? 230 : 160;
+      switch (widgetTemplate) {
+        case "chatgpt":
+          // Prompt bar + floating button
+          width = 360;
+          height = 230;
+          break;
+        default:
+          // Bubble/Panel: just the button + optional intro bubble
+          width = 300;
+          height = showBubbleMessage ? 230 : 160;
+      }
     } else {
-      // Adjust sizes based on template when open
       switch (widgetTemplate) {
         case "panel":
           width = 380;
@@ -64,7 +71,7 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
           width = 420;
           height = 520;
           break;
-        default: // bubble
+        default:
           width = 380;
           height = 540;
       }
