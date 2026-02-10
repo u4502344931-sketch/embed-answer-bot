@@ -49,27 +49,23 @@ const EmbeddableWidget = ({ widgetId, settings }: EmbeddableWidgetProps) => {
     let width = 380;
     let height = 540;
 
-    if (!isOpen) {
-      switch (widgetTemplate) {
-        case "chatgpt":
-          // Prompt bar + floating button
-          width = 360;
-          height = 230;
-          break;
-        default:
-          // Bubble/Panel: just the button + optional intro bubble
-          width = 300;
-          height = showBubbleMessage ? 230 : 160;
+    if (widgetTemplate === "chatgpt") {
+      // Full-screen panel when open
+      if (isOpen) {
+        width = 500;
+        height = 600;
+      } else {
+        width = 360;
+        height = 230;
       }
+    } else if (!isOpen) {
+      width = 300;
+      height = showBubbleMessage ? 230 : 160;
     } else {
       switch (widgetTemplate) {
         case "panel":
           width = 380;
           height = 560;
-          break;
-        case "chatgpt":
-          width = 420;
-          height = 520;
           break;
         default:
           width = 380;
