@@ -23,130 +23,98 @@ const ChatGPTWidget = ({
 }: WidgetTemplateProps) => {
   const isRight = position === "bottom-right" || position === "top-right";
 
-  const positionClasses = {
-    "bottom-right": "bottom-0 right-0",
-    "bottom-left": "bottom-0 left-0",
-    "top-right": "top-0 right-0",
-    "top-left": "top-0 left-0",
-  };
-
   return (
-    <div
-      className={`fixed ${positionClasses[position as keyof typeof positionClasses] || positionClasses["bottom-right"]} z-50 p-4`}
-    >
-      {/* Prompt bar (visible when chat is NOT open) */}
+    <div className="fixed inset-0 z-50 flex flex-col">
+      {/* Closed state: prompt bar + floating button */}
       <AnimatePresence>
         {!isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="mb-3"
-          >
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden w-[340px] max-w-[calc(100vw-2rem)]">
-              {/* Mini header */}
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
-                <div
-                  className="w-7 h-7 rounded-lg flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`,
-                  }}
-                >
-                  <Sparkles className="w-3.5 h-3.5" style={{ color: textColor }} />
-                </div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {headerTitle}
-                </span>
-              </div>
-
-              {/* Input area */}
-              <div className="p-3">
-                <div className="relative bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
-                  <Input
-                    placeholder="Ask me anything..."
-                    value={promptValue}
-                    onChange={(e) => setPromptValue(e.target.value)}
-                    className="pr-12 h-11 bg-transparent border-0 focus-visible:ring-0 rounded-xl text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && promptValue.trim() && !isLoading) {
-                        setIsOpen(true);
-                        handleSendMessage();
-                      }
-                    }}
-                    onFocus={() => {
-                      // Open chat on focus if there are existing messages
-                      if (chatMessages.length > 0) {
-                        setIsOpen(true);
-                      }
-                    }}
-                    disabled={isLoading}
-                  />
-                  <Button
-                    size="icon"
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg"
-                    style={{ backgroundColor: primaryColor, color: textColor }}
-                    disabled={!promptValue.trim() || isLoading}
-                    onClick={() => {
-                      setIsOpen(true);
-                      handleSendMessage();
-                    }}
+          <div className={`fixed bottom-4 ${isRight ? "right-4" : "left-4"} z-50 flex flex-col items-${isRight ? "end" : "start"} gap-3`}>
+            {/* Prompt bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+            >
+              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden w-[340px] max-w-[calc(100vw-2rem)]">
+                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+                  <div
+                    className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}
                   >
-                    <Send className="w-4 h-4" />
-                  </Button>
+                    <Sparkles className="w-3.5 h-3.5" style={{ color: textColor }} />
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{headerTitle}</span>
                 </div>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-2">
-                  Try: &quot;{welcomeMessage.length > 30 ? "What are your pricing plans?" : welcomeMessage}&quot;
-                </p>
+                <div className="p-3">
+                  <div className="relative bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <Input
+                      placeholder="Ask me anything..."
+                      value={promptValue}
+                      onChange={(e) => setPromptValue(e.target.value)}
+                      className="pr-12 h-11 bg-transparent border-0 focus-visible:ring-0 rounded-xl text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && promptValue.trim() && !isLoading) {
+                          setIsOpen(true);
+                          handleSendMessage();
+                        }
+                      }}
+                      onFocus={() => {
+                        if (chatMessages.length > 0) setIsOpen(true);
+                      }}
+                      disabled={isLoading}
+                    />
+                    <Button
+                      size="icon"
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg"
+                      style={{ backgroundColor: primaryColor, color: textColor }}
+                      disabled={!promptValue.trim() || isLoading}
+                      onClick={() => { setIsOpen(true); handleSendMessage(); }}
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-2">
+                    Try: &quot;{welcomeMessage.length > 30 ? "What are your pricing plans?" : welcomeMessage}&quot;
+                  </p>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Floating button */}
+            <motion.button
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setIsOpen(true)}
+              className="w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer shadow-lg"
+              style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}
+            >
+              <Sparkles className="w-6 h-6" style={{ color: textColor }} />
+            </motion.button>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Floating sparkle button */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => setIsOpen(true)}
-            className={`w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer shadow-lg ${
-              isRight ? "ml-auto" : "mr-auto"
-            }`}
-            style={{
-              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`,
-            }}
-          >
-            <Sparkles className="w-6 h-6" style={{ color: textColor }} />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Full chat window (opens when user interacts) */}
+      {/* Open state: full-screen chat panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="w-[400px] max-w-[calc(100vw-2rem)] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-2xl"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            className="flex flex-col w-full h-full bg-white dark:bg-gray-950"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shrink-0">
               <div className="flex items-center gap-2">
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`,
-                  }}
+                  style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}
                 >
                   <Sparkles className="w-4 h-4" style={{ color: textColor }} />
                 </div>
-                <span className="font-medium text-sm text-gray-900 dark:text-white">
-                  {headerTitle}
-                </span>
+                <span className="font-medium text-sm text-gray-900 dark:text-white">{headerTitle}</span>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -156,29 +124,16 @@ const ChatGPTWidget = ({
               </button>
             </div>
 
-            {/* Messages */}
+            {/* Messages area - fills remaining space */}
             <div
               ref={chatContainerRef}
-              className="h-[350px] overflow-y-auto p-4 space-y-4 bg-white dark:bg-gray-900"
+              className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
             >
               {chatMessages.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                    style={{
-                      background: `linear-gradient(135deg, ${primaryColor}20, ${primaryColor}10)`,
-                    }}
-                  >
-                    <Sparkles className="w-8 h-8" style={{ color: primaryColor }} />
-                  </div>
-                  <div>
-                    <p className="text-gray-900 dark:text-white font-medium">
-                      {welcomeMessage}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Ask me anything to get started
-                    </p>
-                  </div>
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
+                  <Sparkles className="w-8 h-8" style={{ color: primaryColor }} />
+                  <p className="text-gray-900 dark:text-white font-medium">{welcomeMessage}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Ask me anything to get started</p>
                 </div>
               )}
 
@@ -190,16 +145,12 @@ const ChatGPTWidget = ({
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] px-4 py-3 text-sm ${
+                    className={`max-w-[80%] px-4 py-3 text-sm ${
                       msg.role === "user"
                         ? "rounded-2xl rounded-br-md"
-                        : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl rounded-bl-md"
+                        : "text-gray-900 dark:text-white"
                     }`}
-                    style={
-                      msg.role === "user"
-                        ? { backgroundColor: primaryColor, color: textColor }
-                        : undefined
-                    }
+                    style={msg.role === "user" ? { backgroundColor: primaryColor, color: textColor } : undefined}
                   >
                     {msg.role === "assistant" ? (
                       <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -213,43 +164,28 @@ const ChatGPTWidget = ({
               ))}
 
               {isLoading && chatMessages[chatMessages.length - 1]?.role === "user" && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-start"
-                >
-                  <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl rounded-bl-md">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                  <div className="px-4 py-3">
                     <div className="flex space-x-1.5">
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0ms" }}
-                      />
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "150ms" }}
-                      />
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "300ms" }}
-                      />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
                   </div>
                 </motion.div>
               )}
             </div>
 
-            {/* Input */}
-            <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
-              <div className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+            {/* Input bar pinned to bottom */}
+            <div className="shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+              <div className="relative bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl max-w-2xl mx-auto">
                 <Input
-                  placeholder="Message..."
+                  placeholder="Ask anything..."
                   value={promptValue}
                   onChange={(e) => setPromptValue(e.target.value)}
                   className="pr-12 h-12 bg-transparent border-0 focus-visible:ring-0 rounded-xl text-sm"
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && promptValue.trim() && !isLoading) {
-                      handleSendMessage();
-                    }
+                    if (e.key === "Enter" && promptValue.trim() && !isLoading) handleSendMessage();
                   }}
                   disabled={isLoading}
                 />
@@ -265,12 +201,7 @@ const ChatGPTWidget = ({
               </div>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-2">
                 Powered by{" "}
-                <a
-                  href="https://sitewise.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-gray-600 dark:hover:text-gray-400 underline"
-                >
+                <a href="https://sitewise.ai" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-400 underline">
                   Sitewise.ai
                 </a>
               </p>
