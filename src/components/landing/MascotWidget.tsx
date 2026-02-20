@@ -39,7 +39,7 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
       setIsBlinking(true);
       setTimeout(() => setIsBlinking(false), 140);
     };
-    const interval = setInterval(blink, 10000);
+    const interval = setInterval(blink, 3000);
     return () => clearInterval(interval);
   }, []);
 
