@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion"; // AnimatePresence still used for cheeks
 
 interface MascotWidgetProps {
   onClick: () => void;
@@ -9,9 +9,6 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
   const mascotRef = useRef<HTMLButtonElement>(null);
   const [eyeAngle, setEyeAngle] = useState({ x: 0, y: 0 });
   const [isNear, setIsNear] = useState(false);
-  const [isBlinking, setIsBlinking] = useState(false);
-
-  // Blinking disabled intentionally
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -24,11 +21,9 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
       const dx = e.clientX - mascotCenterX;
       const dy = e.clientY - mascotCenterY;
 
-      // Calculate distance for proximity detection
       const distance = Math.sqrt(dx * dx + dy * dy);
       setIsNear(distance < 160);
 
-      // Calculate angle and clamp pupil movement
       const angle = Math.atan2(dy, dx);
       const maxOffset = 4;
       setEyeAngle({
@@ -41,18 +36,12 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const Eye = ({ offsetX = 0 }: { offsetX?: number }) => (
+  const Eye = () => (
     <div
       className="relative flex items-center justify-center rounded-full bg-white"
-      style={{ width: 14, height: 14, marginLeft: offsetX }}
+      style={{ width: 14, height: 14 }}
     >
-      {/* Eyelid blink */}
-      <motion.div
-        animate={{ scaleY: isBlinking ? 1 : 0 }}
-        transition={{ duration: 0.08 }}
-        className="absolute inset-0 rounded-full bg-[hsl(var(--primary))] origin-top z-10"
-      />
-      {/* Pupil */}
+      {/* Pupil only — no eyelid */}
       <motion.div
         animate={{ x: eyeAngle.x, y: eyeAngle.y }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
