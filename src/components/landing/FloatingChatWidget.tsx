@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, MessageCircle, X, Sparkles } from "lucide-react";
+import { Send, X, Sparkles } from "lucide-react";
+import MascotWidget from "./MascotWidget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -163,19 +164,13 @@ Always be helpful, answer questions about SiteWise features, and gently guide in
           )}
         </AnimatePresence>
         
-        {/* Floating chat button */}
-        <motion.button
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        {/* Mascot chat button */}
+        <MascotWidget
           onClick={() => {
             setIsChatOpen(true);
             setShowBubbleMessage(false);
           }}
-          className="w-14 h-14 bg-foreground rounded-full shadow-premium flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
-          aria-label="Open chat"
-        >
-          <MessageCircle className="w-6 h-6 text-card" />
-        </motion.button>
+        />
       </div>
 
       {/* ChatGPT-style prompt dialog */}
