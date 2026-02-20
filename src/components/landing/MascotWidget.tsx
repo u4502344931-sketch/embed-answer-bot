@@ -11,15 +11,7 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
   const [isNear, setIsNear] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
 
-  useEffect(() => {
-    // Random blink interval
-    const blinkInterval = setInterval(() => {
-      setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 150);
-    }, Math.random() * 3000 + 2000);
-
-    return () => clearInterval(blinkInterval);
-  }, []);
+  // Blinking disabled intentionally
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
