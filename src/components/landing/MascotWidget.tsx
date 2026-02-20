@@ -37,7 +37,7 @@ const MascotWidget = ({ onClick }: MascotWidgetProps) => {
   useEffect(() => {
     const blink = () => {
       setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 140);
+      setTimeout(() => setIsBlinking(false), 200);
     };
     const interval = setInterval(blink, 3000);
     return () => clearInterval(interval);
